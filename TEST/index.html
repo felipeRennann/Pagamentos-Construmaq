@@ -84,8 +84,8 @@
         input[type="text"],
         input[type="number"],
         select {
-            width: 100%;
-            padding: 13px; /* Aumenta o padding dos campos de input */
+            width: 25%;
+            padding: 10px; /* Aumenta o padding dos campos de input */
             font-size: 1.5rem; /* Aumenta o tamanho da fonte dos inputs */
             border: 1px solid #ccc;
             border-radius: 10px;
@@ -314,7 +314,42 @@
             background-color: rgb(250, 252, 252); /* Cor de fundo do modal */
         }
 
-
+        .input-row {
+            display: flex;
+            justify-content: space-between; /* Espaço entre os itens */
+            margin-bottom: 30px; /* Espaçamento entre linhas */
+        }
+        
+        .form-group {
+            flex: 1; /* Faz os inputs ocuparem o mesmo espaço */
+            margin-right: 30px; /* Espaço entre os grupos de inputs */
+        }
+        
+        .form-group:last-child {
+            margin-right: 0; /* Remove a margem do último grupo */
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px; /* Espaçamento entre label e input */
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%; /* Faz o input ocupar 100% da largura do grupo */
+            padding: 8px; /* Adiciona padding para um visual melhor */
+            border: 1px solid #ccc; /* Adiciona borda */
+            border-radius: 10px; /* Bordas arredondadas */
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #007bff; /* Borda azul ao focar */
+            outline: none; /* Remove o contorno padrão */
+        }
+        
+        
+      
 
     </style>
 </head>
@@ -340,61 +375,75 @@
     <div id="cargo" class="tab active">
         <div class="form-container">
             <form id="cargo-form">
-                <div class="form-group">
-                    <label for="nome_cargo">Nome do Cargo:</label>
-                    <input type="text" id="nome_cargo" name="nome_cargo" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="nome_cargo">Nome do Cargo:</label>
+                        <input type="text" id="nome_cargo" name="nome_cargo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_hora_base">Valor Hora:</label>
+                        <input type="number" step="0.01" id="valor_hora_base" name="valor_hora_base" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="valor_hora_base">Valor Hora:</label>
-                    <input type="number" step="0.01" id="valor_hora_base" name="valor_hora_base" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="valor_hora_extra_um">Valor Hora Extra de 50%:</label>
+                        <input type="number" step="0.01" id="valor_hora_extra_um" name="valor_hora_extra_um" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_hora_extra_dois">Valor Hora Extra de 100%:</label>
+                        <input type="number" step="0.01" id="valor_hora_extra_dois" name="valor_hora_extra_dois" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="valor_hora_extra_um">Valor Hora Extra de 50%:</label>
-                    <input type="number" step="0.01" id="valor_hora_extra_um" name="valor_hora_extra_um" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="adicional_noturno">Valor Adicional Noturno:</label>
+                        <input type="number" step="0.01" id="adicional_noturno" name="adicional_noturno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="repouso_remunerado">Valor Repouso Remunerado:</label>
+                        <input type="number" step="0.01" id="repouso_remunerado" name="repouso_remunerado" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="valor_hora_extra_dois">Valor Hora Extra de 100%:</label>
-                    <input type="number" step="0.01" id="valor_hora_extra_dois" name="valor_hora_extra_dois" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="valor_ferias">Valor de Férias:</label>
+                        <input type="number" step="0.01" id="valor_ferias" name="valor_ferias" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_um_terco_ferias">Valor do 1/3 Férias:</label>
+                        <input type="number" step="0.01" id="valor_um_terco_ferias" name="valor_um_terco_ferias" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="adicional_noturno">Valor Adicional Noturno:</label>
-                    <input type="number" step="0.01" id="adicional_noturno" name="adicional_noturno" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="valor_decimo_terceiro">Valor do 13º Salário:</label>
+                        <input type="number" step="0.01" id="valor_decimo_terceiro" name="valor_decimo_terceiro" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_antecipa_salario">Valor da Antecipação Salarial:</label>
+                        <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="repouso_remunerado">Valor Repouso Remunerado:</label>
-                    <input type="number" step="0.01" id="repouso_remunerado" name="repouso_remunerado" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="pagamento_fgts">Pagamento de FGTS:</label>
+                        <input type="number" step="0.01" id="pagamento_fgts" name="pagamento_fgts" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="desconto_inss">Desconto de INSS:</label>
+                        <input type="number" step="0.01" id="desconto_inss" name="desconto_inss" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="valor_ferias">Valor de Férias:</label>
-                    <input type="number" step="0.01" id="valor_ferias" name="valor_ferias" required>
-                </div>
-                <div class="form-group">
-                    <label for="valor_um_terco_ferias">Valor do 1/3 Férias:</label>
-                    <input type="number" step="0.01" id="valor_um_terco_ferias" name="valor_um_terco_ferias" required>
-                </div>
-                <div class="form-group">
-                    <label for="valor_decimo_terceiro">Valor do 13º Salário:</label>
-                    <input type="number" step="0.01" id="valor_decimo_terceiro" name="valor_decimo_terceiro" required>
-                </div>
-                <div class="form-group">
-                    <label for="valor_antecipa_salario">Valor da Antecipação Sarial (%):</label>
-                    <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required>
-                </div>
-                <div class="form-group">
-                    <label for="pagamento_fgts">Pagamento de FGTS:</label>
-                    <input type="number" step="0.01" id="pagamento_fgts" name="pagamento_fgts" required>
-                </div>
-                <div class="form-group">
-                    <label for="desconto_inss">Desconto de INSS:</label>
-                    <input type="number" step="0.01" id="desconto_inss" name="desconto_inss" required>
-                </div>
-                <div class="form-group">
-                    <label for="desconto_refeicao">Desconto de Refeição:</label>
-                    <input type="number" step="0.01" id="desconto_refeicao" name="desconto_refeicao" required>
-                </div>
-                <div class="form-group">
-                    <label for="desconto_transporte">Desconto de Transporte:</label>
-                    <input type="number" step="0.01" id="desconto_transporte" name="desconto_transporte" required>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="desconto_refeicao">Desconto de Refeição:</label>
+                        <input type="number" step="0.01" id="desconto_refeicao" name="desconto_refeicao" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="desconto_transporte">Desconto de Transporte:</label>
+                        <input type="number" step="0.01" id="desconto_transporte" name="desconto_transporte" required>
+                    </div>
                 </div>
                 <input type="submit" value="Cadastrar Cargo">
                 <div id="message" class="message"></div>
@@ -402,51 +451,58 @@
         </div>
     </div>
     
-
     <div id="funcionario" class="tab">
         <div class="form-container">
             <form id="funcionario-form">
-                <div class="form-group">
-                    <label for="nome_funcionario">Nome do Funcionário:</label>
-                    <input type="text" id="nome_funcionario" name="nome_funcionario" required placeholder="Nome do Funcionário" required>
-                </div>
-                <div class="form-group">
-                    <label for="cargo_funcionario">Cargo:</label>
-                    <select id="cargo_funcionario" name="cargo_funcionario" required>
-                        <!-- Cargos serão preenchidos aqui -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="horas_trabalhadas">Quantidade de Horas Trabalhadas :</label>
-                    <input type="number" id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="Horas Trabalhadas" required>
-                </div>
-                <div class="form-group">
-                    <label for="horas_extras">Quantidade de Horas Extras de 50%:</label>
-                    <input type="number" id="horas_extras_um" name="horas_extras_um" required placeholder="Horas Extras 50%" required>
-                </div>
-                <div class="form-group">
-                    <label for="horas_extras">Quantidade Horas Extras de 100%:</label>
-                    <input type="number" id="horas_extras_dois" name="horas_extras_dois" required placeholder="Horas Extras 100%" required>
-                </div>
-                <div class="form-group">
-                    <label for="horas_noturnas">Quantidade de Horas Noturnas:</label>
-                    <input type="number" id="horas_noturnas" name="horas_noturnas" required placeholder="Horas Noturnas" required>
-                </div>
-                <div class="form-group">
-                    <label for="repouso_remunerado">Repouso Remunerado:</label>
-                    <input type="number" id="repouso_remunerado" name="repouso_remunerado" required placeholder="Repouso Remunerado" required>
-                </div>
+                <div class="input-row">
                     <div class="form-group">
-                    <label for="valor_antecipa_salario">Valor Adiantamento:</label>
-                    <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required placeholder="Valor Adiantamento" required>  
-                </div>    
+                        <label for="nome_funcionario">Nome do Funcionário:</label>
+                        <input type="text" id="nome_funcionario" name="nome_funcionario" required placeholder="Nome do Funcionário">
+                    </div>
+                    <div class="form-group">
+                        <label for="cargo_funcionario">Cargo:</label>
+                        <select id="cargo_funcionario" name="cargo_funcionario" required>
+                            <!-- Cargos serão preenchidos aqui -->
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="horas_trabalhadas">Quant. de Horas Trabalhadas:</label>
+                        <input type="number" id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="Horas Trabalhadas">
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_extras_um">Quant. de Horas Extras de 50%:</label>
+                        <input type="number" id="horas_extras_um" name="horas_extras_um" required placeholder="Horas Extras 50%">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="horas_extras_dois">Quant. de Horas Extras de 100%:</label>
+                        <input type="number" id="horas_extras_dois" name="horas_extras_dois" required placeholder="Horas Extras 100%">
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_noturnas">Quant. de Horas Noturnas:</label>
+                        <input type="number" id="horas_noturnas" name="horas_noturnas" required placeholder="Horas Noturnas">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="repouso_remunerado">Repouso Remunerado:</label>
+                        <input type="number" id="repouso_remunerado" name="repouso_remunerado" required placeholder="Repouso Remunerado">
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_antecipa_salario">Valor Adiantamento:</label>
+                        <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required placeholder="Valor Adiantamento">  
+                    </div>
+                </div>
                 <button type="button" id="gerarDocumentoButton">Gerar Documento</button> 
             </form>
         </div>
-
-        
-
-        <!-- PUP UP para pre visualização -->
+    </div>
+    
+    
+            <!-- PUP UP para pre visualização -->
         <div class="modal" id="documentPreviewModal" tabindex="-1" aria-labelledby="documentPreviewModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg-custom">
                 <div class="modal-content">
@@ -709,9 +765,16 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
         const myModal = new bootstrap.Modal(document.getElementById('documentPreviewModal'));
         myModal.show();
 
-        
 
-        // Configura o evento de clique no botão de imprimir
+
+            // Configura o evento de clique no botão "Cancelar"
+         document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
+                $('#documentPreviewModal').modal('hide'); // Fecha o modal
+            };
+
+    
+
+        // Configura o evento de clique no botão de imprimir PDF
         document.getElementById('printDocumentButton').onclick = function() {
             const { jsPDF } = window.jspdf; 
             const pdf = new jsPDF({
