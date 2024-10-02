@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de pagamentos Construmaq Engenharia</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <!-- Incluindo a biblioteca jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem; /* Aumenta o tamanho do título */
+            color: rgb(15, 15, 15);
+        }
+        h2 {
+            text-align: left ;
+            font-size: 1.5rem; /* Aumenta o tamanho do título */
+            color: rgb(15, 15, 15);
+        }
+        td{
+            text-align: center   ;
+            font-size: 1rem; /* Aumenta o tamanho do título */
+            color: rgb(15, 15, 15);
+        }
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+        .tab-buttons {
+            text-align: center;
+            margin-bottom: 30px; /* Aumenta a margem inferior */
+        }
+        
+        
+        .tab-buttons button {
+            padding: 10px 20px; /* Aumenta o padding dos botões */
+            margin: 0 10px; /* Aumenta o espaço entre os botões */
+            font-size: 3%; /* Aumenta o tamanho da fonte dos botões */
+            cursor: pointer;
+            background-color: #5b89b4;
+            color: rgb(15, 15, 15);
+            border: none;
+            border-radius: 0px; /* Suaviza mais as bordas dos botões */
+        }
+        .tab-buttons button:hover {
+            background-color: #0e4a7c;
+        }
+       
+        .form-container {
+            background-color: rgb(253, 253, 253);
+            padding: 100px; /* Aumenta o padding do container de formulário */
+            border-radius: 30px;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2); /* Aumenta a sombra */
+            max-width: 1000px; /* Aumenta a largura máxima do formulário */
+            margin: -30px auto; /* Aumenta a margem superior e inferior */
+        }
+
+        /*Letras*/
+        .form-group {
+            margin-bottom: 15px; /* Aumenta o espaço entre os campos do formulário */
+            font-weight: bold; 
+        }
+        label {
+            display: block;
+            margin-bottom: 15px; /* Aumenta o espaço abaixo dos rótulos */
+            font-size: 1.3rem; /* Aumenta o tamanho da fonte dos rótulos */
+            font-weight: bold; 
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 13px; /* Aumenta o padding dos campos de input */
+            font-size: 1.5rem; /* Aumenta o tamanho da fonte dos inputs */
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        input[type="submit"]  {
+            background-color: #175d9d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 15px 30px; /* Aumenta o padding do botão */
+            font-size: 1.2rem; /* Aumenta o tamanho da fonte do botão */
+            border-radius: 10px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0e4a7c;
+        }
+        button[type="button"] {
+            background-color: #175d9d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 15px 30px; /* Aumenta o padding do botão */
+            font-size: 1.2rem; /* Aumenta o tamanho da fonte do botão */
+            border-radius: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #2b4557;
+            margin: 10px 0; /* Aumenta o espaço entre os itens da lista */
+            padding: 10px; /* Aumenta o padding dos itens da lista */
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem; /* Aumenta o tamanho da fonte dos itens da lista */
+        }
+    
+        /* Personalizando a largura da lista de Cargos Cadastrados */
+        #lista .form-container {
+            max-width: 900px; /* Define uma largura ainda maior */
+            padding: 20px;
+            margin-top: 10px; /* Aumenta o espaço acima do container de cargos cadastrados */
+            height: auto;
+        }
+    
+        /* Modal customizado em tela cheia - POP UP */
+        .modal-custom {
+            max-width: 300%; /* Define a largura do modal */
+            width: 200%; /* Define a largura total */
+            height: 150vh; /* Define a altura como 100% da viewport */
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(50%, 50%);
+            width: 80%;
+            max-width: 800px; /* Ajuste a largura máxima do modal */
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1050;
+            border-radius: 10px; /* Deixa o modal com bordas arredondadas */
+        }
+        .modal-dialog {
+            max-width: 5px; /* Ajuste a largura do modal */
+        }
+        
+        .modal-content {
+            padding: 5px;
+        }
+        
+    
+        /* Ajustes gerais para o modal fullscreen */
+        .modal-fullscreen {
+            width: 100vw; /* Largura total da viewport */
+            height: 100vh; /* Altura total da viewport */
+            max-width: 100vw; /* Largura máxima = 100% da viewport */
+            max-height: 100vh; /* Altura máxima = 100% da viewport */
+            margin: 0; /* Sem margens */
+            padding: 0; /* Sem padding */
+        }
+        .modal-content {
+            height: 100%; /* O conteúdo também ocupa a altura total */
+        }
+        .modal-dialog {
+            max-width: none;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+        }
+        .modal-body {
+            overflow-y: auto;
+            height: 597px; /* Defina a altura desejada */
+            width: 600px; /* Defina a largura desejada */
+        }
+        #lista .form-container {
+            max-width: 1000000px; /* Aumenta a largura da listagem */
+            padding: 10px; /* Aumenta o padding interno */
+            height: auto;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        li {
+            background: #2b4557;
+            margin: 11px 0; /* Aumenta o espaçamento entre os itens */
+            padding: 10px; /* Aumenta o padding dos itens */
+            border-radius: 6px; /* Deixa as bordas mais arredondadas */
+            font-size: 18px; /* Aumenta o tamanho da fonte */
+            color: white;
+        }
+        
+        /* Estilização da tabela de cargos cadastrados */
+        #lista-cargos table {
+            width: 100%; /* Faz a tabela ocupar toda a largura disponível */
+            border-collapse: collapse;
+        }
+        /* Centralizar dados na tabela*/
+        #table {
+            width: 100%; /* Faz a tabela ocupar toda a largura disponível */
+            border-collapse: collapse; /* Remove espaços entre as células */
+        }
+        th, td {
+            border: 1px solid #ccc; /* Adiciona uma borda ao redor das células */
+            padding: 150px; /* Espaçamento dentro das células */
+            text-align: center; /* Centraliza o texto nas células */
+        }
+    
+        
+        #lista-cargos th, #lista-cargos td {
+            padding: 10px; /* Aumenta o espaçamento interno das células */
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px; /* Aumenta o tamanho da fonte */
+        }
+        
+        #lista-cargos th {
+            background-color: #175d9d;
+            color: white;
+        }
+        
+        #lista-cargos tr:hover {
+            background-color: #f1f1f1;
+        }
+        .tab-buttons button {
+            /* Estilo existente */
+            padding: 10px 20px; 
+            margin: 0 10px; 
+            font-size: 1.5rem; 
+            cursor: pointer;
+            background-color: #5b89b4;
+            color: rgb(15, 15, 15);
+            border: none;
+            border-radius: 20px; 
+        }
+        
+        /* Botões no Modal */
+        .modal-footer .btn {
+            padding: 15px 30px; /* Ajusta o padding */
+            font-size: 1.2rem; /* Ajusta o tamanho da fonte */
+            border-radius: 10px; /* Ajusta a borda */
+        }
+        
+        .modal-footer .btn-secondary {
+            background-color: #5b89b4; /* Cor do botão secundário */
+            color: white; /* Cor do texto */
+        }
+        
+        .modal-footer .btn-primary {
+            background-color: #175d9d; /* Cor do botão primário */
+            color: white; /* Cor do texto */
+        }
+        
+        .modal-footer .btn-secondary:hover, .modal-footer .btn-primary:hover {
+            background-color: #0e4a7c; /* Cor ao passar o mouse */
+        }
+         
+        /* Defina a largura POP UP */
+        .modal-lg-custom {
+            max-width: 80%; /* Ajusta a largura do modal */
+            max-height: 80%; /* Ajusta a altura do modal */
+        }
+
+        /* Fundo escurecido para destacar o modal */
+        .modal-backdrop {
+            z-index: 1040; /* Definindo que o backdrop fique logo abaixo do modal */
+        }
+
+        /* Garantindo que o modal fique na frente de todo o conteúdo */
+        .modal {
+            z-index: 1050; /* Modal vai aparecer acima dos outros elementos */
+        }
+
+        /* Ajustando para manter o modal centralizado e visível */
+        .modal-dialog {
+            margin-top: 20%;
+        }
+                /* Sobrescrevendo o comportamento padrão de centralização do Bootstrap */
+        .modal {
+            position: absolute; /* O modal será posicionado manualmente */
+            top: 20px; /* Posiciona no topo da página */
+            left: 20px; /* Posiciona à esquerda da página */
+            right: auto; /* Remove o comportamento de centralização */
+            bottom: auto; /* Remove o comportamento de centralização */
+            z-index: 9999; /* Garante que o modal apareça acima do conteúdo */
+            display: none; /* O modal só aparecerá quando ativado */
+        }
+
+        /* Customizando o tamanho do modal */
+        .modal-lg-custom {
+            width: 100%; /* Ajuste a largura conforme necessário */
+            max-width: none; /* Remove o limite de largura do Bootstrap */
+            height: auto; /* Permite que a altura do modal seja dinâmica */
+        }
+
+        /* Customização do conteúdo do modal */
+        .modal-content {
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 1px;
+            background-color: rgb(250, 252, 252); /* Cor de fundo do modal */
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <h1>Portal de Pagamentos     Construmaq Engenharia</h1>
+    
+    <div class="tab-buttons">
+        <button onclick="showTab('lista')">Lista de Cargos</button>
+        <button onclick="showTab('cargo')">Cadastro de Cargo</button>
+        <button onclick="showTab('funcionario')">Dados do Funcionário</button>
+        
+    </div>
+    <div id="lista" class="tab active">
+        <div class="form-container">
+            <h2>Cargos Cadastrados:</h2>
+            <div id="lista-cargos">
+                <!-- Lista de cargos será preenchida dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <div id="cargo" class="tab active">
+        <div class="form-container">
+            <form id="cargo-form">
+                <div class="form-group">
+                    <label for="nome_cargo">Nome do Cargo:</label>
+                    <input type="text" id="nome_cargo" name="nome_cargo" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_base">Valor Hora:</label>
+                    <input type="number" step="0.01" id="valor_hora_base" name="valor_hora_base" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_extra_um">Valor Hora Extra de 50%:</label>
+                    <input type="number" step="0.01" id="valor_hora_extra_um" name="valor_hora_extra_um" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_extra_dois">Valor Hora Extra de 100%:</label>
+                    <input type="number" step="0.01" id="valor_hora_extra_dois" name="valor_hora_extra_dois" required>
+                </div>
+                <div class="form-group">
+                    <label for="adicional_noturno">Valor Adicional Noturno:</label>
+                    <input type="number" step="0.01" id="adicional_noturno" name="adicional_noturno" required>
+                </div>
+                <div class="form-group">
+                    <label for="repouso_remunerado">Valor Repouso Remunerado:</label>
+                    <input type="number" step="0.01" id="repouso_remunerado" name="repouso_remunerado" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_ferias">Valor de Férias:</label>
+                    <input type="number" step="0.01" id="valor_ferias" name="valor_ferias" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_um_terco_ferias">Valor do 1/3 Férias:</label>
+                    <input type="number" step="0.01" id="valor_um_terco_ferias" name="valor_um_terco_ferias" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_decimo_terceiro">Valor do 13º Salário:</label>
+                    <input type="number" step="0.01" id="valor_decimo_terceiro" name="valor_decimo_terceiro" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_antecipa_salario">Valor da Antecipação Sarial (%):</label>
+                    <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required>
+                </div>
+                <div class="form-group">
+                    <label for="pagamento_fgts">Pagamento de FGTS:</label>
+                    <input type="number" step="0.01" id="pagamento_fgts" name="pagamento_fgts" required>
+                </div>
+                <div class="form-group">
+                    <label for="desconto_inss">Desconto de INSS:</label>
+                    <input type="number" step="0.01" id="desconto_inss" name="desconto_inss" required>
+                </div>
+                <div class="form-group">
+                    <label for="desconto_refeicao">Desconto de Refeição:</label>
+                    <input type="number" step="0.01" id="desconto_refeicao" name="desconto_refeicao" required>
+                </div>
+                <div class="form-group">
+                    <label for="desconto_transporte">Desconto de Transporte:</label>
+                    <input type="number" step="0.01" id="desconto_transporte" name="desconto_transporte" required>
+                </div>
+                <input type="submit" value="Cadastrar Cargo">
+                <div id="message" class="message"></div>
+            </form>
+        </div>
+    </div>
+    
+
+    <div id="funcionario" class="tab">
+        <div class="form-container">
+            <form id="funcionario-form">
+                <div class="form-group">
+                    <label for="nome_funcionario">Nome do Funcionário:</label>
+                    <input type="text" id="nome_funcionario" name="nome_funcionario" required placeholder="Nome do Funcionário" required>
+                </div>
+                <div class="form-group">
+                    <label for="cargo_funcionario">Cargo:</label>
+                    <select id="cargo_funcionario" name="cargo_funcionario" required>
+                        <!-- Cargos serão preenchidos aqui -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="horas_trabalhadas">Quantidade de Horas Trabalhadas :</label>
+                    <input type="number" id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="Horas Trabalhadas" required>
+                </div>
+                <div class="form-group">
+                    <label for="horas_extras">Quantidade de Horas Extras de 50%:</label>
+                    <input type="number" id="horas_extras_um" name="horas_extras_um" required placeholder="Horas Extras 50%" required>
+                </div>
+                <div class="form-group">
+                    <label for="horas_extras">Quantidade Horas Extras de 100%:</label>
+                    <input type="number" id="horas_extras_dois" name="horas_extras_dois" required placeholder="Horas Extras 100%" required>
+                </div>
+                <div class="form-group">
+                    <label for="horas_noturnas">Quantidade de Horas Noturnas:</label>
+                    <input type="number" id="horas_noturnas" name="horas_noturnas" required placeholder="Horas Noturnas" required>
+                </div>
+                <div class="form-group">
+                    <label for="repouso_remunerado">Repouso Remunerado:</label>
+                    <input type="number" id="repouso_remunerado" name="repouso_remunerado" required placeholder="Repouso Remunerado" required>
+                </div>
+                    <div class="form-group">
+                    <label for="valor_antecipa_salario">Valor Adiantamento:</label>
+                    <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required placeholder="Valor Adiantamento" required>  
+                </div>    
+                <button type="button" id="gerarDocumentoButton">Gerar Documento</button> 
+            </form>
+        </div>
+
+        
+
+        <!-- PUP UP para pre visualização -->
+        <div class="modal" id="documentPreviewModal" tabindex="-1" aria-labelledby="documentPreviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg-custom">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="documentPreviewModalLabel">Prévia do Documento</h5>
+                    </div>
+                    <div class="modal-body">
+                        <pre id="documentContentPreview"></pre> <!-- Prévia do documento -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="printDocumentButton" class="btn btn-primary">Gerar PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+    <script>
+        function showTab(tab) {
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => {
+                t.classList.remove('active');
+            });
+            document.getElementById(tab).classList.add('active');
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM carregado, buscando cargos...");
+            fetchCargos();
+            showTab('lista'); // Mostra a aba de cargos ao carregar
+        });
+
+        async function fetchCargos() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/cargos'); 
+                if (!response.ok) throw new Error('Network response was not ok');
+                const cargos = await response.json();
+                
+                
+                  console.log("Cargos recebidos da API:", cargos); 
+                
+                const cargoSelect = document.getElementById('cargo_funcionario');
+                const listaCargos = document.getElementById('lista-cargos');
+
+                console.log("Elemento cargo_funcionario:", cargoSelect);
+                console.log("Elemento lista-cargos:", listaCargos);
+        
+                cargoSelect.innerHTML = ''; // Limpa as opções existentes
+                listaCargos.innerHTML = ''; // Limpa a lista existente
+                //listaCargos.appendChild(table); // Adiciona a tabela ao elemento
+
+
+                
+                // Cria uma tabela dinamicamente
+                const table = document.createElement('table');
+                table.style.width = '100%'; // Ajusta a largura da tabela
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Cargo</th>
+                            <th>Hora Base (%)</th>
+                            <th>Repouso Remunerado (%)</th>
+                            <th>Hora Extra 50%</th>
+                            <th>Hora Extra 100%</th>
+                            <th>Adicional Noturno (%)</th>
+                            <th>Ferias (%)</th>
+                            <th>Pagamento 1/3 Ferias (%)</th>
+                            <th>Pagamaneto 13° Salario (%)</th>
+                            <th>Valor da Antecipação Sarial (%)</th>
+                            <th>Pagamento FGTS (%)</th>
+                            <th>Desconto INSS (%)</th>
+                            <th>Desconto Refeição (%)</th>
+                            <th>Desconto Vale Transporte (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+                
+                const tableBody = table.querySelector('tbody');
+                
+                // Itera sobre as chaves do objeto cargos
+                for (const key in cargos) {
+                    if (cargos.hasOwnProperty(key)) {
+                        const cargo = cargos[key];  
+                        console.log("Preenchendo cargo:", key, cargo); // Adicione este log
+        
+                        // Preenche a tabela com os dados do cargo
+                        const row = tableBody.insertRow();
+                row.insertCell(0).innerText = key; // Cargo
+                row.insertCell(1).innerText = (parseFloat(cargo.valor_hora_base) || 0).toFixed(2); // Valor Hora Base
+                row.insertCell(2).innerText = (parseFloat(cargo.repouso_remunerado) || 0).toFixed(2); // Vl. Repouso Remunerado
+                row.insertCell(3).innerText = (parseFloat(cargo.valor_hora_extra_um) || 0).toFixed(2); // Valor Hora Extra de 50%
+                row.insertCell(4).innerText = (parseFloat(cargo.valor_hora_extra_dois) || 0).toFixed(2); // Valor Hora Extra de 100%
+                row.insertCell(5).innerText = (parseFloat(cargo.adicional_noturno) || 0).toFixed(2); // Vl. Ad. Noturno
+                row.insertCell(6).innerText = (parseFloat(cargo.valor_ferias) || 0).toFixed(2); // Valor Férias
+                row.insertCell(7).innerText = (parseFloat(cargo.valor_um_terco_ferias) || 0).toFixed(2); // 1/3 Férias
+                row.insertCell(8).innerText = (parseFloat(cargo.valor_decimo_terceiro) || 0).toFixed(2); // 13º Salário
+                row.insertCell(9).innerText = (parseFloat(cargo.valor_antecipa_salario) || 0).toFixed(2); // Antecipação Salarial
+                row.insertCell(10).innerText = (parseFloat(cargo.pagamento_fgts) || 0).toFixed(2); // Pagamento FGTS
+                row.insertCell(11).innerText = (parseFloat(cargo.desconto_inss) || 0).toFixed(2); // Desconto INSS
+                row.insertCell(12).innerText = (parseFloat(cargo.desconto_refeicao) || 0).toFixed(2); // Desconto Refeição
+                row.insertCell(13).innerText = (parseFloat(cargo.desconto_transporte) || 0).toFixed(2); // Desconto Transporte
+
+                        // Preenche o select com as opções de cargos
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = key;
+                        cargoSelect.appendChild(option);
+                    }
+                }
+                
+                // Exibe a tabela na página (assumindo que você tenha um elemento para isso)
+                listaCargos.appendChild(table);
+                console.log("Tabela adicionada ao DOM:", table); // Adicione este log
+        
+            } catch (error) {
+                console.error("Erro ao buscar cargos:", error);
+            }
+        }
+        
+       // Criar cargo 
+    document.getElementById('cargo-form').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Impede o envio padrão do formulário
+
+    
+
+    const formData = new FormData(event.target);
+    //const cargoData = Object.fromEntries(formData);
+
+    const cargoData = {
+        nome_cargo: document.getElementById('nome_cargo').value.trim(),
+        valor_hora_base: parseFloat(document.getElementById('valor_hora_base').value),
+        valor_hora_extra_um: parseFloat(document.getElementById('valor_hora_extra_um').value),
+        valor_hora_extra_dois: parseFloat(document.getElementById('valor_hora_extra_dois').value),
+        adicional_noturno: parseFloat(document.getElementById('adicional_noturno').value),
+        repouso_remunerado: parseFloat(document.getElementById('repouso_remunerado').value),
+        desconto_inss: parseFloat(document.getElementById('desconto_inss').value),
+        desconto_refeicao: parseFloat(document.getElementById('desconto_refeicao').value),
+        desconto_transporte: parseFloat(document.getElementById('desconto_transporte').value),
+        pagamento_fgts: parseFloat(document.getElementById('pagamento_fgts').value),
+        valor_decimo_terceiro: parseFloat(document.getElementById('valor_decimo_terceiro').value),
+        valor_ferias: parseFloat(document.getElementById('valor_ferias').value),
+        valor_um_terco_ferias: parseFloat(document.getElementById('valor_um_terco_ferias').value),
+        valor_antecipa_salario: parseFloat(document.getElementById('valor_antecipa_salario').value) // Inclua este campo
+    };
+    
+    
+    // Log do cargoData
+    console.log('Dados do Cargo:', cargoData); // Aqui está o log
+
+
+    const numericFields = [
+        'valor_hora_base',
+        'valor_hora_extra_um',
+        'valor_hora_extra_dois',
+        'adicional_noturno',
+        'repouso_remunerado',
+        'desconto_inss',
+        'desconto_refeicao',
+        'desconto_transporte',
+        'pagamento_fgts',
+        'valor_decimo_terceiro',
+        'valor_antecipa_salario',
+        'valor_ferias',
+        'valor_um_terco_ferias'
+    ];
+
+    // Captura os dados do formulário
+    numericFields.forEach(field => {    
+        cargoData[field] = parseFloat(cargoData[field]) || 0; // Corrigido para usar 'field'
+    });
+
+    console.log(cargoData.nome_cargo); 
+    console.log(cargoData);
+    console.log(typeof cargoData.valor_hora_base); // Deve ser 'number'
+
+    // Envie os dados para o backend
+    const response = await fetch('http://127.0.0.1:5000/api/cargos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cargoData)
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        document.getElementById('message').textContent = data.message;  // Mensagem de sucesso
+        fetchCargos();  // Atualiza a lista de cargos
+    } else {
+        const error = await response.json();
+        document.getElementById('message').textContent = error.message;  // Mensagem de erro
+    }
+});
+
+
+    
+
+        // Cadastro para pagamento e imprimir PDF -> Gerador do PDF
+document.getElementById('gerarDocumentoButton').addEventListener('click', async function(event) {
+    event.preventDefault();
+    const formData = new FormData(document.getElementById('funcionario-form'));
+    const funcionarioData = Object.fromEntries(formData);
+
+    const cargoSelect = document.getElementById('cargo_funcionario');
+    const cargoId = cargoSelect.value;
+
+    // Fetch para obter os dados do cargo
+    const cargoResponse = await fetch(`http://127.0.0.1:5000/api/cargos/${cargoId}`);
+    if (!cargoResponse.ok) {
+        console.error('Erro ao buscar dados do cargo:', cargoResponse.statusText);
+        return;
+    }
+    const cargo = await cargoResponse.json();
+
+    // Adicione os dados do cargo ao objeto funcionarioData
+    funcionarioData.horas_trabalhadas = parseFloat(funcionarioData.horas_trabalhadas, 10);
+    funcionarioData.horas_extras_um = parseFloat(funcionarioData.horas_extras_um, 10);
+    funcionarioData.horas_extras_dois = parseFloat(funcionarioData.horas_extras_dois, 10);
+    funcionarioData.horas_noturnas = parseFloat(funcionarioData.horas_noturnas, 10);
+    funcionarioData.repouso_remunerado = parseFloat(funcionarioData.repouso_remunerado, 10);
+    funcionarioData.valor_antecipa_salario = parseFloat(funcionarioData.valor_antecipa_salario, 10);
+    
+       // Aqui está o log para verificar os dados
+       console.log('Dados do funcionário:', funcionarioData);
+
+    // Verifique se todos os campos obrigatórios estão preenchidos
+    const requiredFields = ['nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas','valor_antecipa_salario'];
+
+    for (const field of requiredFields) {
+        if (field !== 'repouso_remunerado' && !funcionarioData[field])  {
+            console.error(`Campo obrigatório "${field}" está faltando.`);
+            return;
+        }
+    }
+    // Envie os dados para o backend
+    console.log('Dados do funcionário:', funcionarioData);
+
+    const response = await fetch('http://127.0.0.1:5000/api/criar_funcionario', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(funcionarioData)
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        const oleriteContent = data.document;  // Pega o conteúdo do olerite
+
+
+         // Atualiza o conteúdo do modal com a prévia
+        document.getElementById('documentContentPreview').textContent = oleriteContent;
+
+        // Abre o modal
+        $('#documentPreviewModal').modal('show');
+        const myModal = new bootstrap.Modal(document.getElementById('documentPreviewModal'));
+        myModal.show();
+
+        
+
+        // Configura o evento de clique no botão de imprimir
+        document.getElementById('printDocumentButton').onclick = function() {
+            const { jsPDF } = window.jspdf; 
+            const pdf = new jsPDF({
+                orientation: "portrai", // ou "landscape" dependendo da necessidade
+                unit: "mm",
+                format: "a4",
+                putOnlyUsedFonts: true,
+                floatPrecision: 16 // números flutuantes
+            });
+            pdf.text(oleriteContent, 20, 30);  // Imprime o conteúdo no PDF
+            pdf.save(`${funcionarioData.nome_funcionario}_olerite.pdf`);
+        };
+    } else {
+        console.error('Erro ao gerar o olerite:', response.statusText);
+    }
+});
+    </script>
+</body>
+</html>

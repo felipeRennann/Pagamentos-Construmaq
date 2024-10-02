@@ -1,0 +1,62 @@
+{
+    "TESTE_NOVO": {
+        "valor_hora_base": 1.99,
+        "valor_hora_extra_um": 2.0,
+        "valor_hora_extra_dois": 2.0,
+        "adicional_noturno": 2.0,
+        "repouso_remunerado": 2.0,
+        "valor_ferias": 0.02,
+        "valor_antecipa_ferias": 0.02,
+        "valor_decimo_terceiro": 0.02,
+        "valor_antecipa_salario": 2.0,
+        "pagamento_fgts": 0.02,
+        "desconto_inss": 0.02,
+        "desconto_refeicao": 2.0,
+        "desconto_transporte": 2.0
+    },
+    "ADM": {
+        "valor_hora_base": 3.0,
+        "valor_hora_extra_um": 3.0,
+        "valor_hora_extra_dois": 3.0,
+        "repouso_remunerado": 3.0,
+        "adicional_noturno": 3.0,
+        "desconto_inss": 3.0,
+        "desconto_refeicao": 3.0,
+        "desconto_transporte": 33.0,
+        "pagamento_fgts": 3.0,
+        "valor_decimo_terceiro": 3.0,
+        "valor_antecipa_salario": 3.0,
+        "valor_ferias": 3.0,
+        "valor_um_terco_ferias": 3.0
+    },
+    "Tester": {
+        "valor_hora_base": 2.0,
+        "valor_hora_extra_um": 3.0,
+        "valor_hora_extra_dois": 4.0,
+        "repouso_remunerado": 2.0,
+        "adicional_noturno": 2.0,
+        "desconto_inss": 4.0,
+        "desconto_refeicao": 4.0,
+        "desconto_transporte": 4.0,
+        "pagamento_fgts": 3.0,
+        "valor_decimo_terceiro": 3.0,
+        "valor_antecipa_salario": 3.0,
+        "valor_ferias": 8.0,
+        "valor_um_terco_ferias": 24.0
+    },
+    "Soldador": {
+        "valor_hora_base": 1.89,
+        "valor_hora_extra_um": 2.83,
+        "valor_hora_extra_dois": 3.78,
+        "repouso_remunerado": 0.0,
+        "adicional_noturno": 0.0,
+        "desconto_inss": 8.0,
+        "desconto_refeicao": 0.0,
+        "desconto_transporte": 0.0,
+        "pagamento_fgts": 9.0,
+        "valor_decimo_terceiro": 8.33,
+        "valor_antecipa_salario": 0.0,
+        "valor_ferias": 8.33,
+        "valor_um_terco_ferias": 2.77
+    }
+}
