@@ -1,6 +1,7 @@
 from gerar_sub_total_um import Sub_total_um
 
 
+
 class Gerar_olerite:
     def __init__(self, funcionario):
         # Inicializa o cargo e o funcionário
