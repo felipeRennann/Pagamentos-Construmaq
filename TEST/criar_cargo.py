@@ -39,6 +39,7 @@ class CriarCargo:
         CriarCargo.salvar_cargos()
         print(f"Cargo {nome} criado com sucesso e adicionado ao dicionário.")   
 
+   
     @staticmethod
     def salvar_cargos():
         with open('cargos.json', 'w') as file:
