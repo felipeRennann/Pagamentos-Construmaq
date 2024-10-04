@@ -58,5 +58,20 @@
         "valor_antecipa_salario": 0.0,
         "valor_ferias": 8.33,
         "valor_um_terco_ferias": 2.77
+    },
+    "Teste3": {
+        "valor_hora_base": 44.0,
+        "valor_hora_extra_um": 2.0,
+        "valor_hora_extra_dois": 2.0,
+        "repouso_remunerado": 2.0,
+        "adicional_noturno": 2.0,
+        "desconto_inss": 2.0,
+        "desconto_refeicao": 1.0,
+        "desconto_transporte": 1.0,
+        "pagamento_fgts": 2.0,
+        "valor_decimo_terceiro": 2.0,
+        "valor_antecipa_salario": 2.0,
+        "valor_ferias": 2.0,
+        "valor_um_terco_ferias": 2.0
     }
 }

@@ -128,7 +128,11 @@ def cargos():
  # Metodo criar funcionario e o gatilho para gerar o olerite
 @app.route('/api/criar_funcionario', methods=['POST'])
 def criar_funcionario():
+   
     data = request.json 
+    
+    #1 logg
+    app.logger.info(f"Dados recebidos: {data}")
 
     required_fields = ['nome_funcionario', 'cargo_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario']
     
@@ -162,7 +166,9 @@ def criar_funcionario():
 
     # Gerar o olerite
     olerite = Gerar_olerite(funcionario)
-    return jsonify({'document': olerite.gerar_sub_um()})
+    buffer =   olerite.gerar_sub_um()
+    
+    return send_file(buffer, as_attachment=True, download_name='olerite.pdf', mimetype='application/pdf')
 
     
 @app.route('/api/cargos/<cargo_id>', methods=['GET'])

@@ -5,11 +5,12 @@ from reportlab.lib.units import mm
 from io import BytesIO
 from gerar_sub_total_um import Sub_total_um
 
-class GerarOlerite:
+class Gerar_olerite:
     def __init__(self, funcionario):
         self.funcionario = funcionario
 
-    def gerar_pdf(self):
+    def gerar_sub_um(self):
+        
         total_pagamento = Sub_total_um.calcular_pagamento_um(self.funcionario)
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4)
