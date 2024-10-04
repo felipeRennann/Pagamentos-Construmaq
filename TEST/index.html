@@ -30,6 +30,13 @@
             text-align: left ;
             font-size: 1.5rem; /* Aumenta o tamanho do título */
             color: rgb(15, 15, 15);
+            
+        }
+        h5 {
+            text-align: left ;
+            font-size: 1.5rem; /* Aumenta o tamanho do título */
+            color: rgb(15, 15, 15);
+            
         }
         td{
             text-align: center   ;
@@ -135,17 +142,18 @@
     
         /* Modal customizado em tela cheia - POP UP */
         .modal-custom {
-            max-width: 300%; /* Define a largura do modal */
-            width: 200%; /* Define a largura total */
-            height: 150vh; /* Define a altura como 100% da viewport */
+            max-width: 100%; /* Largura total */
+            width: 100%; /* Largura do modal */
+            height: 90vh; /* Altura quase total da viewport */
+            margin: 0; /* Sem margens */
         }
         .modal {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(50%, 50%);
-            width: 80%;
-            max-width: 800px; /* Ajuste a largura máxima do modal */
+            top: 20%;
+            left: 30%;
+            transform: translate(50%, 20%);
+            width: 100%;
+            max-width: 650px; /* Ajuste a largura máxima do modal */
             background-color: white;
             padding: 30px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
@@ -153,7 +161,7 @@
             border-radius: 10px; /* Deixa o modal com bordas arredondadas */
         }
         .modal-dialog {
-            max-width: 5px; /* Ajuste a largura do modal */
+            max-width: 90%; /* Ajuste a largura do modal */
         }
         
         .modal-content {
@@ -180,9 +188,15 @@
             margin: 0;
         }
         .modal-body {
-            overflow-y: auto;
-            height: 597px; /* Defina a altura desejada */
-            width: 600px; /* Defina a largura desejada */
+            overflow-x: auto; /* Permite scroll horizontal se o conteúdo exceder a largura */
+            overflow-y: hidden; /* Impede scroll vertical */
+            max-height: 80vh; /* Define a altura máxima do corpo do modal */
+            white-space: nowrap; /* Impede a quebra de linha, forçando o conteúdo a ficar em uma única linha */
+                }
+        
+        .modal {
+            overflow: hidden; /* Impede scroll no modal inteiro */
+        
         }
         #lista .form-container {
             max-width: 1000000px; /* Aumenta a largura da listagem */
@@ -289,7 +303,8 @@
 
         /* Ajustando para manter o modal centralizado e visível */
         .modal-dialog {
-            margin-top: 20%;
+            height: 90vh; /* Altura quase total da viewport */
+            margin: 0; /* Sem margens */
         }
                 /* Sobrescrevendo o comportamento padrão de centralização do Bootstrap */
         .modal {
@@ -350,7 +365,22 @@
             border-color: #007bff; /* Borda azul ao focar */
             outline: none; /* Remove o contorno padrão */
         }
+
+        #documentContentPreview {
+            overflow-x: auto; /* Permite rolagem horizontal */
+            overflow-y: hidden; /* Remove a rolagem vertical */
+            white-space: nowrap; /* Impede que o conteúdo quebre em várias linhas */
+            max-width: 90%; /* Ajuste a largura máxima do elemento */
+            height: 600px; /* Ajuste a altura conforme necessário */
+            margin: 0 auto; /* Centraliza o elemento horizontalmente */
+        }
         
+        iframe {
+            width: 100%; /* Garante que o iframe use a largura total */
+            height: 600px; /* Ajuste conforme necessário */
+        }
+        
+       
         
       
 
@@ -759,26 +789,16 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
         // Cria um link para download do PDF
         const url = window.URL.createObjectURL(blob);
         const iframe = document.createElement('iframe');
-        a.style.display = 'none';
-        a.href = url;
         iframe.style.width = '100%';
-        iframe.style.height = '400px';
+        iframe.style.height = '600px';
         iframe.src = url;
         document.getElementById('documentContentPreview').innerHTML = ''; // Limpar conteúdo anterior
         document.getElementById('documentContentPreview').appendChild(iframe);
 
-        // Exibe o modal se necessário
-        $('#documentPreviewModal').modal('show');
-
-        // Configura o evento de clique no botão "Cancelar"
-        document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
-            $('#documentPreviewModal').modal('hide'); // Fecha o modal
-        };
-      
+       
 
         // Configura o evento de clique no botão de imprimir PDF
         document.getElementById('printDocumentButton').onclick = async function() {
-            const blob = await response.blob();  // Para o caso do PDF
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -788,6 +808,14 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         };
+         
+
+         // Configura o evento de clique no botão "Cancelar"
+         document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
+             $('#documentPreviewModal').modal('hide'); // Fecha o modal
+         };
+           // Exibe o modal se necessário
+         $('#documentPreviewModal').modal('show');
         
         } else {
             console.error('Erro ao gerar o olerite:', response.statusText);
