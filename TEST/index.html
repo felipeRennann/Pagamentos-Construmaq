@@ -708,6 +708,7 @@
     
 
         // Cadastro para pagamento e imprimir PDF -> Gerador do PDF
+// Cadastro para pagamento e imprimir PDF -> Gerador do PDF
 document.getElementById('gerarDocumentoButton').addEventListener('click', async function(event) {
     event.preventDefault();
     const formData = new FormData(document.getElementById('funcionario-form'));
@@ -732,21 +733,17 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
     funcionarioData.repouso_remunerado = parseFloat(funcionarioData.repouso_remunerado, 10);
     funcionarioData.valor_antecipa_salario = parseFloat(funcionarioData.valor_antecipa_salario, 10);
     
-       // Aqui está o log para verificar os dados
-       console.log('Dados do funcionário:', funcionarioData);
-
     // Verifique se todos os campos obrigatórios estão preenchidos
-    const requiredFields = ['nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas','valor_antecipa_salario'];
+    const requiredFields = ['nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario'];
 
     for (const field of requiredFields) {
-        if (field !== 'repouso_remunerado' && !funcionarioData[field])  {
+        if (field !== 'repouso_remunerado' && !funcionarioData[field]) {
             console.error(`Campo obrigatório "${field}" está faltando.`);
             return;
         }
     }
-    // Envie os dados para o backend
-    console.log('Dados do funcionário:', funcionarioData);
 
+    // Envie os dados para o backend
     const response = await fetch('http://127.0.0.1:5000/api/criar_funcionario', {
         method: 'POST',
         headers: {
@@ -756,44 +753,37 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
     });
 
     if (response.ok) {
-        const data = await response.json();
-        const oleriteContent = data.document;  // Pega o conteúdo do olerite
-
-
-         // Atualiza o conteúdo do modal com a prévia
+        // Aqui, você pode exibir a prévia do olerite (se for necessário)
+        const oleriteContent = await response.text();  // Assumindo que a resposta ainda é um texto
         document.getElementById('documentContentPreview').textContent = oleriteContent;
 
         // Abre o modal
         $('#documentPreviewModal').modal('show');
-        const myModal = new bootstrap.Modal(document.getElementById('documentPreviewModal'));
-        myModal.show();
 
-
-
-            // Configura o evento de clique no botão "Cancelar"
-         document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
-                $('#documentPreviewModal').modal('hide'); // Fecha o modal
-            };
-
-    
+        // Configura o evento de clique no botão "Cancelar"
+        document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
+            $('#documentPreviewModal').modal('hide'); // Fecha o modal
+        };
 
         // Configura o evento de clique no botão de imprimir PDF
-        document.getElementById('printDocumentButton').onclick = function() {
-            const { jsPDF } = window.jspdf; 
-            const pdf = new jsPDF({
-                orientation: "portrai", // ou "landscape" dependendo da necessidade
-                unit: "mm",
-                format: "a4",
-                putOnlyUsedFonts: true,
-                floatPrecision: 16 // números flutuantes
-            });
-            pdf.text(oleriteContent, 20, 30);  // Imprime o conteúdo no PDF
-            pdf.save(`${funcionarioData.nome_funcionario}_olerite.pdf`);
+        document.getElementById('printDocumentButton').onclick = async function() {
+            const blob = await response.blob();  // Para o caso do PDF
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `${funcionarioData.nome_funcionario}_olerite.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
         };
+        
     } else {
         console.error('Erro ao gerar o olerite:', response.statusText);
     }
 });
+
     </script>
 </body>
 </html>
