@@ -707,7 +707,7 @@
 
     
 
-        // Cadastro para pagamento e imprimir PDF -> Gerador do PDF
+        
 // Cadastro para pagamento e imprimir PDF -> Gerador do PDF
 document.getElementById('gerarDocumentoButton').addEventListener('click', async function(event) {
     event.preventDefault();
@@ -753,17 +753,32 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
     });
 
     if (response.ok) {
-        // Aqui, você pode exibir a prévia do olerite (se for necessário)
-        const oleriteContent = await response.text();  // Assumindo que a resposta ainda é um texto
-        document.getElementById('documentContentPreview').textContent = oleriteContent;
+        // Ler o PDF como blob
+        const blob = await response.blob();
 
-        // Abre o modal
+        // Cria um link para download do PDF
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `${funcionarioData.nome_funcionario}_olerite.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // Exibe o modal se necessário
         $('#documentPreviewModal').modal('show');
 
         // Configura o evento de clique no botão "Cancelar"
         document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
             $('#documentPreviewModal').modal('hide'); // Fecha o modal
         };
+
+        } else {
+                console.error('Erro ao gerar o olerite:', response.statusText);
+        }
+      
 
         // Configura o evento de clique no botão de imprimir PDF
         document.getElementById('printDocumentButton').onclick = async function() {
