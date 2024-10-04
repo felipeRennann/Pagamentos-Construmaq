@@ -758,14 +758,14 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
 
         // Cria um link para download do PDF
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const iframe = document.createElement('iframe');
         a.style.display = 'none';
         a.href = url;
-        a.download = `${funcionarioData.nome_funcionario}_olerite.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        iframe.style.width = '100%';
+        iframe.style.height = '400px';
+        iframe.src = url;
+        document.getElementById('documentContentPreview').innerHTML = ''; // Limpar conteúdo anterior
+        document.getElementById('documentContentPreview').appendChild(iframe);
 
         // Exibe o modal se necessário
         $('#documentPreviewModal').modal('show');
@@ -774,10 +774,6 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
         document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
             $('#documentPreviewModal').modal('hide'); // Fecha o modal
         };
-
-        } else {
-                console.error('Erro ao gerar o olerite:', response.statusText);
-        }
       
 
         // Configura o evento de clique no botão de imprimir PDF
@@ -785,7 +781,6 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
             const blob = await response.blob();  // Para o caso do PDF
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.style.display = 'none';
             a.href = url;
             a.download = `${funcionarioData.nome_funcionario}_olerite.pdf`;
             document.body.appendChild(a);
@@ -794,9 +789,9 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
             document.body.removeChild(a);
         };
         
-    } else {
-        console.error('Erro ao gerar o olerite:', response.statusText);
-    }
+        } else {
+            console.error('Erro ao gerar o olerite:', response.statusText);
+        }
 });
 
     </script>
