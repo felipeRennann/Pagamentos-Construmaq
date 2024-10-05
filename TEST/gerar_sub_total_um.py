@@ -76,6 +76,8 @@ class Sub_total_um:
         pagamento_adicional_noturno = self.horas_noturnas * adicional_noturno
         pagamento_folga_remunerada = self.repouso_remunerado * valor_repouso_remunerado
         
+    
+        
         sub_total_um = (pagamento_base + 
                         pagamento_horas_extras_um +
                         pagamento_horas_extras_dois +
@@ -91,8 +93,8 @@ class Sub_total_um:
         
         #SUB-TOTAL 3
         
-        sub_total_dois_cinco = sub_total_um * pagamento_fgts /100
-        sub_total_dois_seis = sub_total_um * desconto_inss /100
+        sub_total_dois_cinco = sub_total_dois  * (pagamento_fgts /100)
+        sub_total_dois_seis = sub_total_dois * (desconto_inss/100)
         sub_total_dois_sete = desconto_refeicao
         sub_total_dois_oito = desconto_tranporte
         

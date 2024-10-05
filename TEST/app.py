@@ -140,10 +140,10 @@ def criar_funcionario():
     if not data or any(field not in data for field in required_fields):
         return jsonify({'error': 'Dados obrigatórios faltando!'}), 400
 
-    # Converte valores de horas para inteiros
+    # Converte valores de horas para float
     try:
         for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'valor_antecipa_salario']:
-            data[field] = int(data[field])
+            data[field] = float(data[field])
     except ValueError:
         return jsonify({'error': 'Valores de horas devem ser numéricos!'}), 400
 

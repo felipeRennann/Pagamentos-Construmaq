@@ -502,27 +502,27 @@
                 <div class="input-row">
                     <div class="form-group">
                         <label for="horas_trabalhadas">Quant. de Horas Trabalhadas:</label>
-                        <input type="number" id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="Horas Trabalhadas">
+                        <input type="number" step="0.01"  id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="Horas Trabalhadas">
                     </div>
                     <div class="form-group">
                         <label for="horas_extras_um">Quant. de Horas Extras de 50%:</label>
-                        <input type="number" id="horas_extras_um" name="horas_extras_um" required placeholder="Horas Extras 50%">
+                        <input type="number" step="0.01"  id="horas_extras_um" name="horas_extras_um" required placeholder="Horas Extras 50%">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
                         <label for="horas_extras_dois">Quant. de Horas Extras de 100%:</label>
-                        <input type="number" id="horas_extras_dois" name="horas_extras_dois" required placeholder="Horas Extras 100%">
+                        <input type="number" step="0.01"  id="horas_extras_dois" name="horas_extras_dois" required placeholder="Horas Extras 100%">
                     </div>
                     <div class="form-group">
                         <label for="horas_noturnas">Quant. de Horas Noturnas:</label>
-                        <input type="number" id="horas_noturnas" name="horas_noturnas" required placeholder="Horas Noturnas">
+                        <input type="number" step="0.01"  id="horas_noturnas" name="horas_noturnas" required placeholder="Horas Noturnas">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
                         <label for="repouso_remunerado">Repouso Remunerado:</label>
-                        <input type="number" id="repouso_remunerado" name="repouso_remunerado" required placeholder="Repouso Remunerado">
+                        <input type="number" step="0.01"  id="repouso_remunerado" name="repouso_remunerado" required placeholder="Repouso Remunerado">
                     </div>
                     <div class="form-group">
                         <label for="valor_antecipa_salario">Valor Adiantamento:</label>
@@ -754,24 +754,35 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
         return;
     }
     const cargo = await cargoResponse.json();
-
+     
+    //Definir um valor default em caso de valor zerado ou null
+    const checkAndParse = (value) => {  
+        const parsedValue = parseFloat(value);
+        return isNaN(parsedValue) ? 0.00 : parsedValue;
+    };
     // Adicione os dados do cargo ao objeto funcionarioData
-    funcionarioData.horas_trabalhadas = parseFloat(funcionarioData.horas_trabalhadas, 10);
-    funcionarioData.horas_extras_um = parseFloat(funcionarioData.horas_extras_um, 10);
-    funcionarioData.horas_extras_dois = parseFloat(funcionarioData.horas_extras_dois, 10);
-    funcionarioData.horas_noturnas = parseFloat(funcionarioData.horas_noturnas, 10);
-    funcionarioData.repouso_remunerado = parseFloat(funcionarioData.repouso_remunerado, 10);
-    funcionarioData.valor_antecipa_salario = parseFloat(funcionarioData.valor_antecipa_salario, 10);
+    funcionarioData.horas_trabalhadas = checkAndParse(funcionarioData.horas_trabalhadas, 10,);
+    funcionarioData.horas_extras_um = checkAndParse(funcionarioData.horas_extras_um, 10);
+    funcionarioData.horas_extras_dois = checkAndParse(funcionarioData.horas_extras_dois, 10);
+    funcionarioData.horas_noturnas = checkAndParse(funcionarioData.horas_noturnas, 10);
+    funcionarioData.repouso_remunerado = checkAndParse(funcionarioData.repouso_remunerado, 10);
+    funcionarioData.valor_antecipa_salario = checkAndParse(funcionarioData.valor_antecipa_salario, 10);
     
     // Verifique se todos os campos obrigatórios estão preenchidos
     const requiredFields = ['nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario'];
+    
+    console.log(" Dado enviados ",funcionarioData.repouso_remunerado); 
 
+    
+    //Valida os dados enviados -> Valor fucionario === string // Demais tem que ser float.
     for (const field of requiredFields) {
-        if (field !== 'repouso_remunerado' && !funcionarioData[field]) {
-            console.error(`Campo obrigatório "${field}" está faltando.`);
-            return;
+        if ((field === 'nome_funcionario' && typeof funcionarioData[field] !== 'string') || 
+        (field !== 'nome_funcionario' && !Number.isFinite(funcionarioData[field]))) {
+        console.error(`Campo obrigatório "${field}" é inválido.`);
+        return;
         }
     }
+    console.log(" Dado enviados 2 ",funcionarioData.repouso_remunerado); 
 
     // Envie os dados para o backend
     const response = await fetch('http://127.0.0.1:5000/api/criar_funcionario', {

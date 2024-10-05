@@ -4,12 +4,12 @@ from gerador_olerite import Gerar_olerite
 def criar_funcionario():
     nome_cargo = input("Digite o cargo do funcionário: ")
     nome_funcionario = input("Digite o nome do funcionário: ")
-    horas_trabalhadas = float(input("Digite as horas trabalhadas: "))
-    repouso_remunerado = float(input("Digite horas respouso remunerado : "))
-    horas_extras_um = float(input("Digite a quantidade de horas extras de 50%: "))
-    horas_extras_dois = float(input("Digite a quantidade de horas extras de 100%: "))
-    horas_noturnas = float(input("Digite a quantidade de horas noturnas: "))
-    adiantamento_salario = float(input("Digite adiantamento salarial: "))
+    horas_trabalhadas = float(input("Digite as horas trabalhadas: "),2)
+    repouso_remunerado = float(input("Digite horas respouso remunerado : "),2)
+    horas_extras_um = float(input("Digite a quantidade de horas extras de 50%: "),2)
+    horas_extras_dois = float(input("Digite a quantidade de horas extras de 100%: "),2)
+    horas_noturnas = float(input("Digite a quantidade de horas noturnas: "),2)
+    adiantamento_salario = float(input("Digite adiantamento salarial: "),2)
     
     
     
