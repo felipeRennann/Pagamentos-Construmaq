@@ -38,25 +38,30 @@ class Gerar_olerite:
         return buffer
 
     def _draw_header(self, elements):
-        
+        total_pagamento = self.funcionario.calcular_pagamento_um()
+     
         header = [
-            ["CONSTRUMAQ LTDA", "", ""],
-            ["Período: 00/00/0000 a 00/00/0000", "", ""],
+            ["R E C I B O","", f"VALOR: R$ {total_pagamento['sub_total_tres']:.2f}"],
             ["", "", ""],
+            [f"RECEBI DE VR3 LTDA. A QUANTIA DE R$: {total_pagamento['sub_total_tres']:.2f}", "",""],
             ["", "", ""]
             
             
         ]
         header_table = Table(header)
         header_table.setStyle(TableStyle([('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                                           ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                           ('ALIGN', (1, 0), (1, 0), 'CENTER'),
+                                           ('ALIGN', (3, 0), (3, 0), 'RIGHT'), 
+                                           ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                                            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
                                            ('FONTSIZE', (0, 0), (-1, -1), 14)]))
         elements.append(header_table)
 
     def _prepare_content(self, total_pagamento):
+        data_inicio_formatada = (self.funcionario.data_inicio).strftime('%d/%m/%Y') 
+        data_fim_formatada = (self.funcionario.data_fim).strftime('%d/%m/%Y')
         return [
-            [f"RECEBI DE CONSTRUMAQ LTDA. A QUANTIA DE R$ {total_pagamento['sub_total_tres']:.2f}" , ""],
+            [f"PROVENIENTE DE PRESTAÇÃO DE SERVIÇOS NO PERÍODO DE", f"{data_inicio_formatada}","Até", f"{data_fim_formatada}"],
             [f"CARGO : {self.funcionario.nome_cargo}", ""],
             [f"HORAS TRABALHADAS:", f"{self.funcionario.horas_trabalhadas:.2f} X {self.funcionario.cargo['valor_hora_base']:.2f}","=", f"{total_pagamento['pagamento_base']:.2f}"],
             [f"REPOUSO REMUNERADO:", f"{self.funcionario.repouso_remunerado:.2f} X {self.funcionario.cargo['repouso_remunerado']:.2f}","=", f"{total_pagamento['pagamento_folga_remunerada']:.2f}"],
@@ -83,7 +88,7 @@ class Gerar_olerite:
                     ('ALIGN', (0, 0), (-1, -1), 'LEFT'), # Alinhamento à esquerda
                     ('ALIGN', (1, 0), (-1, -1), 'RIGHT'), # Alinhamento à direita para a segunda coluna
                     ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'), # Fonte
-                    ('FONTSIZE', (0, 0), (-1, -1), 14), # Tamanho da fonte
+                    ('FONTSIZE', (0, 0), (-1, -1), 12), # Tamanho da fonte
                     ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Padding na parte inferior do cabeçalho
                     ('BACKGROUND', (0, 1), (-1, -1), colors.beige), # Cor do fundo para o restante da tabela
                 ]))

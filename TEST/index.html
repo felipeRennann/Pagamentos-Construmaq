@@ -88,16 +88,36 @@
             margin-bottom: 15px; /* Aumenta o espaço abaixo dos rótulos */
             font-size: 1.3rem; /* Aumenta o tamanho da fonte dos rótulos */
             font-weight: bold; 
+        
+
         }
+        .input-row {
+            display: flex;
+            justify-content: space-between; /* Espaço entre os itens */
+            margin-bottom: 10px; /* Espaçamento entre linhas */
+            
+            
+        }
+        .input-row input:focus {
+            outline: none; /* Remove a borda de foco */
+            box-shadow: none; /* Remove sombra de foco */
+        }
+        
         input[type="text"],
         input[type="number"],
+        input[type="date"],
         select {
+           
             width: 25%;
             padding: 10px; /* Aumenta o padding dos campos de input */
             font-size: 1.5rem; /* Aumenta o tamanho da fonte dos inputs */
             border: 1px solid #ccc;
-            border-radius: 10px;
+            border-radius: 8px;
+            transition: border 0.3s ease;
+
         }
+      
+
         input[type="submit"]  {
             background-color: #175d9d;
             color: white;
@@ -241,6 +261,7 @@
             text-align: center;
             border-bottom: 1px solid #ddd;
             font-size: 18px; /* Aumenta o tamanho da fonte */
+            font-weight: bold;
         }
         
         #lista-cargos th {
@@ -251,6 +272,7 @@
         #lista-cargos tr:hover {
             background-color: #f1f1f1;
         }
+    
         .tab-buttons button {
             /* Estilo existente */
             padding: 10px 40px; 
@@ -331,13 +353,7 @@
             border-radius: 1px;
             background-color: rgb(250, 252, 252); /* Cor de fundo do modal */
         }
-
-        .input-row {
-            display: flex;
-            justify-content: space-between; /* Espaço entre os itens */
-            margin-bottom: 30px; /* Espaçamento entre linhas */
-        }
-        
+ 
         .form-group {
             flex: 1; /* Faz os inputs ocuparem o mesmo espaço */
             margin-right: 30px; /* Espaço entre os grupos de inputs */
@@ -360,10 +376,12 @@
             border-radius: 10px; /* Bordas arredondadas */
         }
         
+        
         .form-group input:focus,
         .form-group select:focus {
             border-color: #007bff; /* Borda azul ao focar */
             outline: none; /* Remove o contorno padrão */
+           
         }
 
         #documentContentPreview {
@@ -489,8 +507,18 @@
             <form id="funcionario-form">
                 <div class="input-row">
                     <div class="form-group">
+                        <label for="data_inicio">Data Inicio:</label>
+                        <input type="date" id="data_inicio" name="data_inicio" required placeholder="EX: dd/mm/aaaa">
+                    </div>
+                    <div class="form-group">    
+                        <label for="data_fim">Data Fim:</label>
+                        <input type="date" id="data_fim" name="data_fim" required placeholder="EX: dd/mm/aaaa">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
                         <label for="nome_funcionario">Nome do Funcionário:</label>
-                        <input type="text" id="nome_funcionario" name="nome_funcionario" required placeholder="Nome do Funcionário">
+                        <input type="text" id="nome_funcionario" name="nome_funcionario" required placeholder="EX: Nome">
                     </div>
                     <div class="form-group">
                         <label for="cargo_funcionario">Cargo:</label>
@@ -502,31 +530,31 @@
                 <div class="input-row">
                     <div class="form-group">
                         <label for="horas_trabalhadas">Quant. de Horas Trabalhadas:</label>
-                        <input type="number" step="0.01"  id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="Horas Trabalhadas">
+                        <input type="number" step="0.01"  id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="0.00">
                     </div>
                     <div class="form-group">
                         <label for="horas_extras_um">Quant. de Horas Extras de 50%:</label>
-                        <input type="number" step="0.01"  id="horas_extras_um" name="horas_extras_um" required placeholder="Horas Extras 50%">
+                        <input type="number" step="0.01"  id="horas_extras_um" name="horas_extras_um" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
                         <label for="horas_extras_dois">Quant. de Horas Extras de 100%:</label>
-                        <input type="number" step="0.01"  id="horas_extras_dois" name="horas_extras_dois" required placeholder="Horas Extras 100%">
+                        <input type="number" step="0.01"  id="horas_extras_dois" name="horas_extras_dois" required placeholder="0.00">
                     </div>
                     <div class="form-group">
                         <label for="horas_noturnas">Quant. de Horas Noturnas:</label>
-                        <input type="number" step="0.01"  id="horas_noturnas" name="horas_noturnas" required placeholder="Horas Noturnas">
+                        <input type="number" step="0.01"  id="horas_noturnas" name="horas_noturnas" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="repouso_remunerado">Repouso Remunerado:</label>
-                        <input type="number" step="0.01"  id="repouso_remunerado" name="repouso_remunerado" required placeholder="Repouso Remunerado">
+                        <label for="repouso_remunerado">Val. Repouso Remunerado:</label>
+                        <input type="number" step="0.01"  id="repouso_remunerado" name="repouso_remunerado" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="valor_antecipa_salario">Valor Adiantamento:</label>
-                        <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required placeholder="Valor Adiantamento">  
+                        <label for="valor_antecipa_salario">Valor do Adiantamento:</label>
+                        <input type="number" step="0.01" id="valor_antecipa_salario" name="valor_antecipa_salario" required placeholder="0.00">  
                     </div>
                 </div>
                 <button type="button" id="gerarDocumentoButton">Gerar Documento</button> 
@@ -735,8 +763,6 @@
 });
 
 
-    
-
         
 // Cadastro para pagamento e imprimir PDF -> Gerador do PDF
 document.getElementById('gerarDocumentoButton').addEventListener('click', async function(event) {
@@ -760,29 +786,60 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
         const parsedValue = parseFloat(value);
         return isNaN(parsedValue) ? 0.00 : parsedValue;
     };
+
+   // Função para formatar data para DD-MM-YYYY
+   const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`; // Formato DD/MM/YYYY
+};
+
     // Adicione os dados do cargo ao objeto funcionarioData
+    
     funcionarioData.horas_trabalhadas = checkAndParse(funcionarioData.horas_trabalhadas, 10,);
     funcionarioData.horas_extras_um = checkAndParse(funcionarioData.horas_extras_um, 10);
     funcionarioData.horas_extras_dois = checkAndParse(funcionarioData.horas_extras_dois, 10);
     funcionarioData.horas_noturnas = checkAndParse(funcionarioData.horas_noturnas, 10);
     funcionarioData.repouso_remunerado = checkAndParse(funcionarioData.repouso_remunerado, 10);
     funcionarioData.valor_antecipa_salario = checkAndParse(funcionarioData.valor_antecipa_salario, 10);
+    funcionarioData.data_inicio = formatDate(funcionarioData.data_inicio);
+    funcionarioData.data_fim = formatDate(funcionarioData.data_fim);
     
     // Verifique se todos os campos obrigatórios estão preenchidos
-    const requiredFields = ['nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario'];
+    const requiredFields = ['data_inicio','data_fim','nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario'];
     
     console.log(" Dado enviados ",funcionarioData.repouso_remunerado); 
+    console.log(" Dado enviados 3 ",funcionarioData.data_inicio); 
 
     
     //Valida os dados enviados -> Valor fucionario === string // Demais tem que ser float.
     for (const field of requiredFields) {
-        if ((field === 'nome_funcionario' && typeof funcionarioData[field] !== 'string') || 
-        (field !== 'nome_funcionario' && !Number.isFinite(funcionarioData[field]))) {
-        console.error(`Campo obrigatório "${field}" é inválido.`);
-        return;
+        const value = funcionarioData[field];
+        // Verifica se o campo é nome_funcionario
+    if (field === 'nome_funcionario') {
+        if (typeof value !== 'string' || value.trim() === '') {
+            console.error(`Campo obrigatório "${field}" é inválido.`);
+            return;
+        }
+    } 
+
+      // Verifica se o campo é data_inicio ou data_fim
+    else if (field === 'data_inicio' || field === 'data_fim') {
+        if (!value || new Date(value.split('-').reverse().join('-')).toString() === "Invalid Date") {
+            console.error(`Campo obrigatório "${field}" é inválido.`);
+            return;
         }
     }
-    console.log(" Dado enviados 2 ",funcionarioData.repouso_remunerado); 
+
+    // Para outros campos que são numéricos
+    else {
+        if (value === undefined || value === null || isNaN(value)) {
+            console.error(`Campo obrigatório "${field}" é inválido.`);
+            return;
+        }
+    }
+
+    }   console.log(funcionarioData)
+    console.log('Dados do funcionário antes de enviar:', JSON.stringify(funcionarioData, null, 2));
 
     // Envie os dados para o backend
     const response = await fetch('http://127.0.0.1:5000/api/criar_funcionario', {
@@ -790,8 +847,11 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(funcionarioData)
+        body: JSON.stringify(funcionarioData),
+        mode:'cors'
+        
     });
+    console.log('Dados do funcionário antes de enviar:', funcionarioData);
 
     if (response.ok) {
         // Ler o PDF como blob
@@ -809,7 +869,7 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
        
 
         // Configura o evento de clique no botão de imprimir PDF
-        document.getElementById('printDocumentButton').onclick = async function() {
+        document.getElementById('printDocumentButton').onclick = async function() { 
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;

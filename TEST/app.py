@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template, send_file
+from datetime import datetime
 from flask_cors import CORS
 from gerar_sub_total_um import Sub_total_um
 from gerador_olerite import Gerar_olerite
@@ -128,47 +129,62 @@ def cargos():
  # Metodo criar funcionario e o gatilho para gerar o olerite
 @app.route('/api/criar_funcionario', methods=['POST'])
 def criar_funcionario():
-   
-    data = request.json 
-    
-    #1 logg
-    app.logger.info(f"Dados recebidos: {data}")
+        app.logger.info(f"Headers: {request.headers}")
+        app.logger.info(f"Data: {request.data}")
+        
+        data = request.json 
+        
+        #1 logg
+        app.logger.info(f"Dados recebidos: {data}")
 
-    required_fields = ['nome_funcionario', 'cargo_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario']
-    
-    # Verifica se os dados obrigatórios estão presentes
-    if not data or any(field not in data for field in required_fields):
-        return jsonify({'error': 'Dados obrigatórios faltando!'}), 400
+        required_fields = [ 'data_inicio','data_fim','nome_funcionario', 'cargo_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario']
+        
+        # Verifica se os dados obrigatórios estão presentes
+        if not data or any(field not in data for field in required_fields):
+            #Loggs
+            app.logger.info(f"Dados recebidos: {data}")
+            app.logger.error('Dados obrigatórios faltando: %s', data)
+            return jsonify({'error': 'Dados obrigatórios faltando!'}), 400
+        
+            # Validação de data
+        try:
+            data['data_inicio'] = datetime.strptime(data['data_inicio'], '%d-%m-%Y').date()
+            data['data_fim'] = datetime.strptime(data['data_fim'], '%d-%m-%Y').date()
+        except ValueError:
+            app.logger.error("Erro na validação das datas.")
+            return jsonify({'error': 'Datas devem estar no formato DD-MM-YYYY!'}), 400
 
-    # Converte valores de horas para float
-    try:
-        for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'valor_antecipa_salario']:
-            data[field] = float(data[field])
-    except ValueError:
-        return jsonify({'error': 'Valores de horas devem ser numéricos!'}), 400
 
-    cargo_id = data['cargo_funcionario']
-    cargo = cargos_dict.get(cargo_id)
+        # Converte valores de horas para float
+        try:
+            for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'valor_antecipa_salario']:
+                data[field] = float(data[field])
+        except ValueError as e:
+            app.logger.error(f"Erro ao converter valores: {e}")
+            return jsonify({'error': 'Valores de horas devem ser numéricos!'}), 400
 
-    if not cargo:
-        return jsonify({'error': 'Cargo não encontrado!'}), 404   
+        cargo_id = data['cargo_funcionario']
+        cargo = cargos_dict.get(cargo_id)
 
-    # Cria o objeto funcionario com base nos dados recebidos
-    funcionario = Sub_total_um(data['nome_funcionario'], cargo_id)
+        if not cargo:
+            return jsonify({'error': 'Cargo não encontrado!'}), 404   
 
-    # Adicionando as horas e outros dados
-    funcionario.adicionar_horas_trabalhadas(data['horas_trabalhadas'])
-    funcionario.adicionar_horas_repouso(data['repouso_remunerado'])
-    funcionario.adicionar_horas_noturnas(data['horas_noturnas'])
-    funcionario.adicionar_horas_extras_um(data['horas_extras_um'])
-    funcionario.adicionar_horas_extras_dois(data['horas_extras_dois'])
-    funcionario.adicionar_adiantamento_salarial(data['valor_antecipa_salario']) 
+        # Cria o objeto funcionario com base nos dados recebidos
+        funcionario = Sub_total_um(data['nome_funcionario'], cargo_id, data['data_inicio'], data['data_fim'])
 
-    # Gerar o olerite
-    olerite = Gerar_olerite(funcionario)
-    buffer =   olerite.gerar_sub_um()
-    
-    return send_file(buffer, as_attachment=True, download_name='olerite.pdf', mimetype='application/pdf')
+        # Adicionando as horas e outros dados   
+        funcionario.adicionar_horas_trabalhadas(data['horas_trabalhadas'])
+        funcionario.adicionar_horas_repouso(data['repouso_remunerado'])
+        funcionario.adicionar_horas_noturnas(data['horas_noturnas'])
+        funcionario.adicionar_horas_extras_um(data['horas_extras_um'])
+        funcionario.adicionar_horas_extras_dois(data['horas_extras_dois'])
+        funcionario.adicionar_adiantamento_salarial(data['valor_antecipa_salario']) 
+
+        # Gerar o olerite
+        olerite = Gerar_olerite(funcionario)
+        buffer =   olerite.gerar_sub_um()
+        
+        return send_file(buffer, as_attachment=True, download_name='olerite.pdf', mimetype='application/pdf')
 
     
 @app.route('/api/cargos/<cargo_id>', methods=['GET'])

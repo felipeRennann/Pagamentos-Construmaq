@@ -3,7 +3,9 @@ from criar_cargo import CriarCargo
 cargos_dict = CriarCargo.carregar_cargos()
 
 class Sub_total_um:
-    def __init__(self, nome, nome_cargo):
+    def __init__(self, nome, nome_cargo,data_inicio,data_fim):
+        self.data_inicio=data_inicio
+        self.data_fim=data_fim
         self.nome = nome
         self.nome_cargo = nome_cargo
         self.horas_trabalhadas = 0
@@ -118,6 +120,7 @@ class Sub_total_um:
         'sub_total_dois_seis' : sub_total_dois_seis,
         'sub_total_dois_sete' : sub_total_dois_sete,
         'sub_total_dois_oito' : sub_total_dois_oito
+        
     }
     
     
