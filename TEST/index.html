@@ -568,11 +568,11 @@
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="correcao_positiva">Correção (+):</label>
+                        <label for="correcao_positiva">Valo Correção (+):</label>
                         <input type="number" step="0.01"  id="correcao_positiva" name="correcao_positiva" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="correcao_negativa">Correção (-):</label>
+                        <label for="correcao_negativa"> Valor Correção (-):</label>
                         <input type="number" step="0.01" id="correcao_negativa" name="correcao_negativa" required placeholder="0.00">  
                     </div>
                 </div>
@@ -836,7 +836,7 @@ document.getElementById('gerarDocumentoButton').addEventListener('click', async 
     funcionarioData.repouso_remunerado = checkAndParse(funcionarioData.repouso_remunerado, 10);
     funcionarioData.desc_refeicao= checkAndParse(funcionarioData.desc_refeicao, 10);
     funcionarioData.correcao_positiva = checkAndParse(funcionarioData.correcao_positiva, 10);
-    funcionarioData.correcao_negativa = checkAndParse(funcionarioData.correcao_positiva, 10);
+    funcionarioData.correcao_negativa = checkAndParse(funcionarioData.correcao_negativa, 10);
     funcionarioData.data_inicio = formatDate(funcionarioData.data_inicio);
     funcionarioData.data_fim = formatDate(funcionarioData.data_fim);
     
