@@ -70,7 +70,6 @@ def cargos():
                 'desconto_transporte',
                 'pagamento_fgts',
                 'valor_decimo_terceiro',
-                'valor_antecipa_salario',
                 'valor_ferias',
                 'valor_um_terco_ferias'
                 
@@ -109,7 +108,6 @@ def cargos():
                 'desconto_transporte': data['desconto_transporte'],
                 'pagamento_fgts': data['pagamento_fgts'],
                 'valor_decimo_terceiro': data['valor_decimo_terceiro'],
-                'valor_antecipa_salario': data['valor_antecipa_salario'],
                 'valor_ferias': data['valor_ferias'],
                 'valor_um_terco_ferias': data['valor_um_terco_ferias']
             }
@@ -137,7 +135,7 @@ def criar_funcionario():
         #1 logg
         app.logger.info(f"Dados recebidos: {data}")
 
-        required_fields = [ 'data_inicio','data_fim','nome_funcionario', 'cargo_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_antecipa_salario']
+        required_fields = [ 'data_inicio','data_fim','nome_funcionario', 'cargo_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'desc_refeicao', 'correcao_positiva', 'correcao_negativa']
         
         # Verifica se os dados obrigatórios estão presentes
         if not data or any(field not in data for field in required_fields):
@@ -157,7 +155,7 @@ def criar_funcionario():
 
         # Converte valores de horas para float
         try:
-            for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'valor_antecipa_salario']:
+            for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'desc_refeicao', 'correcao_positiva', 'correcao_negativa']:
                 data[field] = float(data[field])
         except ValueError as e:
             app.logger.error(f"Erro ao converter valores: {e}")
@@ -178,7 +176,10 @@ def criar_funcionario():
         funcionario.adicionar_horas_noturnas(data['horas_noturnas'])
         funcionario.adicionar_horas_extras_um(data['horas_extras_um'])
         funcionario.adicionar_horas_extras_dois(data['horas_extras_dois'])
-        funcionario.adicionar_adiantamento_salarial(data['valor_antecipa_salario']) 
+        funcionario.adicionar_desc_refeicao(data['desc_refeicao']) 
+        funcionario.adicionar_correcao_positiva(data['correcao_positiva']) 
+        funcionario.adicionar_correcao_negativa(data['correcao_negativa']) 
+         
 
         # Gerar o olerite
         olerite = Gerar_olerite(funcionario)

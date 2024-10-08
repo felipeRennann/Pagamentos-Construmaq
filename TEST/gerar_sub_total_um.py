@@ -14,7 +14,9 @@ class Sub_total_um:
         self.horas_noturnas = 0
         self.repouso_remunerado = 0
         self.valor_ferias=0
-        self.adiantamento_sal = 0
+        self.desc_refeicao = 0
+        self.correcao_positiva=0
+        self.correcao_negativa=0
         
 
     
@@ -38,7 +40,16 @@ class Sub_total_um:
         
     def adicionar_pagamento_ferias(self,valor):
         self.valor_ferias += valor
-            
+        
+    def adicionar_desc_refeicao(self,valor):
+        self.desc_refeicao  += valor        
+        
+    def adicionar_correcao_positiva(self,valor):
+        self.correcao_positiva += valor        
+        
+    def adicionar_correcao_negativa(self,valor):
+        self.correcao_negativa += valor         
+        
         
     def valida_cargo(self):
         print(f"Cargos disponíveis: {list(cargos_dict.keys())}")
@@ -65,11 +76,10 @@ class Sub_total_um:
         valor_ferias = self.cargo['valor_ferias']
         valor_antecipa_ferias = self.cargo['valor_um_terco_ferias']
         valor_decimo_terceito = self.cargo['valor_decimo_terceiro']
-        valor_antecipa_salario = self.cargo['valor_antecipa_salario']
         pagamento_fgts = self.cargo['pagamento_fgts']
         desconto_inss = self.cargo['desconto_inss']
         desconto_refeicao = self.cargo['desconto_refeicao']
-        desconto_tranporte = self.cargo['desconto_transporte']
+        desconto_transporte = self.cargo['desconto_transporte']
             
         #SUB-TATAL 1
         pagamento_base = self.horas_trabalhadas * valor_hora_base
@@ -89,18 +99,20 @@ class Sub_total_um:
         sub_total_um_um = sub_total_um * valor_ferias /100
         sub_total_um_dois = sub_total_um* valor_antecipa_ferias /100 #1/3 ferias
         sub_total_um_tres = sub_total_um * valor_decimo_terceito /100
-        sub_total_um_quantro =  self.adiantamento_sal * valor_antecipa_salario 
+        #sub_total_um_quantro =  self.adiantamento_sal * valor_antecipa_salario #
+        sub_total_um_cinco = sub_total_um  * (pagamento_fgts /100)
         
-        sub_total_dois =(sub_total_um + sub_total_um_um + sub_total_um_dois + sub_total_um_tres+ sub_total_um_quantro)
+        sub_total_dois =(sub_total_um + sub_total_um_um + sub_total_um_dois + sub_total_um_tres+ sub_total_um_cinco)
         
         #SUB-TOTAL 3
         
-        sub_total_dois_cinco = sub_total_dois  * (pagamento_fgts /100)
         sub_total_dois_seis = sub_total_dois * (desconto_inss/100)
-        sub_total_dois_sete = desconto_refeicao
-        sub_total_dois_oito = desconto_tranporte
+        sub_total_dois_sete = self.desc_refeicao * desconto_refeicao
+        sub_total_dois_oito = desconto_transporte
+        sub_total_dois_nove = self.correcao_positiva
+        sub_total_dois_dez = self.correcao_negativa
         
-        sub_total_tres =(sub_total_dois + sub_total_dois_cinco - sub_total_dois_seis - sub_total_dois_sete - sub_total_dois_oito)
+        sub_total_tres =(sub_total_dois  - sub_total_dois_seis - sub_total_dois_sete - sub_total_dois_oito + sub_total_dois_nove - sub_total_dois_dez)
         
         
         return {
@@ -115,11 +127,12 @@ class Sub_total_um:
         'sub_total_um_um' : sub_total_um_um,
         'sub_total_um_dois' : sub_total_um_dois,
         'sub_total_um_tres' : sub_total_um_tres,
-        'sub_total_um_quantro' : sub_total_um_quantro,
-        'sub_total_dois_cinco' : sub_total_dois_cinco,
+        'sub_total_um_cinco' : sub_total_um_cinco,
         'sub_total_dois_seis' : sub_total_dois_seis,
         'sub_total_dois_sete' : sub_total_dois_sete,
-        'sub_total_dois_oito' : sub_total_dois_oito
+        'sub_total_dois_oito' : sub_total_dois_oito,
+        'sub_total_dois_nove' : sub_total_dois_nove,
+        'sub_total_dois_dez' : sub_total_dois_dez
         
     }
     

@@ -41,9 +41,13 @@ class Gerar_olerite:
         total_pagamento = self.funcionario.calcular_pagamento_um()
      
         header = [
+            ["VR3 EIRELI", "", ""],
+            ["CNPJ:    12.507.345/0001-15", "", ""],
+            ["", "", ""],
+            ["", "", ""],
             ["R E C I B O","", f"VALOR: R$ {total_pagamento['sub_total_tres']:.2f}"],
             ["", "", ""],
-            [f"RECEBI DE VR3 LTDA. A QUANTIA DE R$: {total_pagamento['sub_total_tres']:.2f}", "",""],
+            [f"RECEBI DE VR3 EIRELI. A QUANTIA DE R$: {total_pagamento['sub_total_tres']:.2f}", "",""],
             ["", "", ""]
             
             
@@ -51,33 +55,37 @@ class Gerar_olerite:
         header_table = Table(header)
         header_table.setStyle(TableStyle([('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
                                            ('ALIGN', (1, 0), (1, 0), 'CENTER'),
-                                           ('ALIGN', (3, 0), (3, 0), 'RIGHT'), 
+                                           ('ALIGN', (5, 0), (5, 0), 'LEFT'), 
                                            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                                            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
                                            ('FONTSIZE', (0, 0), (-1, -1), 14)]))
+        
         elements.append(header_table)
 
     def _prepare_content(self, total_pagamento):
         data_inicio_formatada = (self.funcionario.data_inicio).strftime('%d/%m/%Y') 
         data_fim_formatada = (self.funcionario.data_fim).strftime('%d/%m/%Y')
         return [
-            [f"PROVENIENTE DE PRESTAÇÃO DE SERVIÇOS NO PERÍODO DE", f"{data_inicio_formatada}","Até", f"{data_fim_formatada}"],
-            [f"CARGO : {self.funcionario.nome_cargo}", ""],
-            [f"HORAS TRABALHADAS:", f"{self.funcionario.horas_trabalhadas:.2f} X {self.funcionario.cargo['valor_hora_base']:.2f}","=", f"{total_pagamento['pagamento_base']:.2f}"],
-            [f"REPOUSO REMUNERADO:", f"{self.funcionario.repouso_remunerado:.2f} X {self.funcionario.cargo['repouso_remunerado']:.2f}","=", f"{total_pagamento['pagamento_folga_remunerada']:.2f}"],
-            [f"HORAS EXTRAS DE 50%:", f"{self.funcionario.horas_extras_um:.2f} X {self.funcionario.cargo['valor_hora_extra_um']:.2f}","=", f"{total_pagamento['pagamento_horas_extras_um']:.2f}"],
-            [f"HORAS EXTRAS DE 100%:", f"{self.funcionario.horas_extras_dois:.2f} X {self.funcionario.cargo['valor_hora_extra_dois']:.2f}","=", f"{total_pagamento['pagamento_horas_extras_dois']:.2f}"],
-            [f"ADICIONAL NOTURNO:", f"{self.funcionario.horas_noturnas:.2f} X {self.funcionario.cargo['adicional_noturno']:.2f}","=", f"{total_pagamento['pagamento_adicional_noturno']:.2f}"],
+            [f"PROVENTOS DE PRESTAÇÃO DE SERVIÇOS NO PERÍODO DE", f"{data_inicio_formatada}","Até", f"{data_fim_formatada}"],
+            [f"SERVIÇO PRESTADO: {self.funcionario.nome_cargo}", "    QUAT.  VL R$","","PROVENTO"],
+            [f"HORAS TRABALHADAS:", f"{self.funcionario.horas_trabalhadas:.2f}  X  {self.funcionario.cargo['valor_hora_base']:.2f}","=", f"{total_pagamento['pagamento_base']:.2f}"],
+            [f"REPOUSO REMUNERADO:", f"{self.funcionario.repouso_remunerado:.2f}  X  {self.funcionario.cargo['repouso_remunerado']:.2f}","=", f"{total_pagamento['pagamento_folga_remunerada']:.2f}"],
+            [f"HORAS EXTRAS DE 50%:", f"{self.funcionario.horas_extras_um:.2f}  X  {self.funcionario.cargo['valor_hora_extra_um']:.2f}","=", f"{total_pagamento['pagamento_horas_extras_um']:.2f}"],
+            [f"HORAS EXTRAS DE 100%:", f"{self.funcionario.horas_extras_dois:.2f}  X  {self.funcionario.cargo['valor_hora_extra_dois']:.2f}","=", f"{total_pagamento['pagamento_horas_extras_dois']:.2f}"],
+            [f"ADICIONAL NOTURNO:", f"{self.funcionario.horas_noturnas:.2f}  X  {self.funcionario.cargo['adicional_noturno']:.2f}","=", f"{total_pagamento['pagamento_adicional_noturno']:.2f}"],
             [f"SUB-TOTAL 1:","","", f"{total_pagamento['sub_total_um']:.2f}",],
             [f"PAGTO. FÉRIAS: ({self.funcionario.cargo['valor_ferias']:.2f}%)","","", f"{total_pagamento['sub_total_um_um']:.2f}", ],
             [f"PAGTO. 1/3 FÉRIAS: ({self.funcionario.cargo['valor_um_terco_ferias']:.2f}%)", "","",f"{total_pagamento['sub_total_um_dois']:.2f}", ],
             [f"PAGTO. 13° SALÁRIO: ({self.funcionario.cargo['valor_decimo_terceiro']:.2f}%)","","", f"{total_pagamento['sub_total_um_tres']:.2f}", ],
+             [f"PAGTO. FGTS: ({self.funcionario.cargo['pagamento_fgts']:.2f}%) (+)","","", f"{total_pagamento['sub_total_um_cinco']:.2f}", ],
             [f"SUB-TOTAL 2","","", f"{total_pagamento['sub_total_dois']:.2f}",],
-            [f"PAGTO. FGTS: ({self.funcionario.cargo['pagamento_fgts']:.2f}%) (+)","","", f"{total_pagamento['sub_total_dois_cinco']:.2f}", ],
-            [f"PAGTO. INSS: ({self.funcionario.cargo['desconto_inss']:.2f}%) (-)","","", f"{total_pagamento['sub_total_dois_seis']:.2f}", ""],
-            [f"DESCO. REFEIÇÃO (-):","","", f"{total_pagamento['sub_total_dois_sete']:.2f}", ""],
-            [f"DESCO VAL TRANSPORTE (-):","","", f"{total_pagamento['sub_total_dois_oito']:.2f}", ""],
+            [f"PAGTO. INSS: ({self.funcionario.cargo['desconto_inss']:.2f}%) (-)","","", f"{total_pagamento['sub_total_dois_seis']:.2f}"],
+            [f"DESCO. REFEIÇÃO (-):",f"{self.funcionario.desc_refeicao:.2f} X {self.funcionario.cargo['desconto_refeicao']:.2f}","=", f"{total_pagamento['sub_total_dois_sete']:.2f}"],
+            [f"DESCO VAL TRANSPORTE (-):","","", f"{total_pagamento['sub_total_dois_oito']:.2f}"],
+            [f"COREÇÃO (+):","","", f"{total_pagamento['sub_total_dois_nove']:.2f}"],
+            [f"CORREÇÃO(-):","","", f"{total_pagamento['sub_total_dois_dez']:.2f}"],
             [f"SALDO A RECEBER:","","", f"{total_pagamento['sub_total_tres']:.2f}"]
+            
         ]
 
     def _create_table(self, content):
@@ -91,6 +99,15 @@ class Gerar_olerite:
                     ('FONTSIZE', (0, 0), (-1, -1), 12), # Tamanho da fonte
                     ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Padding na parte inferior do cabeçalho
                     ('BACKGROUND', (0, 1), (-1, -1), colors.beige), # Cor do fundo para o restante da tabela
+                    ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),  # Negrito para a última linha
+                    ('FONTSIZE', (0, -1), (-1, -1), 12),  # Tamanho da fonte para a última linha
+                    # Negrito para "SUB-TOTAL 1" e "SUB-TOTAL 2" e a primeira Linha
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Negrito para 1 linhas'
+                    ('FONTNAME', (0, 12), (-1, 12), 'Helvetica-Bold'), # Negrito para "SUB-TOTAL 2"
+                    ('FONTNAME', (0, 7), (-1, 7), 'Helvetica-Bold'),  # Negrito para "SUB-TOTAL 1"
+                
+                    
+                    
                 ]))
             
         return table
