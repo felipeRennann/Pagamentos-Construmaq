@@ -138,5 +138,19 @@
         "valor_decimo_terceiro": 1.0,
         "valor_ferias": 1.0,
         "valor_um_terco_ferias": 1.0
+    },
+    "Teste": {
+        "valor_hora_base": 4.0,
+        "valor_hora_extra_um": 4.0,
+        "valor_hora_extra_dois": 4.0,
+        "repouso_remunerado": 4.0,
+        "adicional_noturno": 4.0,
+        "desconto_inss": 4.0,
+        "desconto_refeicao": 4.0,
+        "desconto_transporte": 4.0,
+        "pagamento_fgts": 4.0,
+        "valor_decimo_terceiro": 4.0,
+        "valor_ferias": 4.0,
+        "valor_um_terco_ferias": 4.0
     }
 }

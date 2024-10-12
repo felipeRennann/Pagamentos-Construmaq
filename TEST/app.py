@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file
 from datetime import datetime
+#from firebase_config import *  # Importa a configuração do Firebase
+#from firebase_admin import firestore
 from flask_cors import CORS
 from gerar_sub_total_um import Sub_total_um
 from gerador_olerite import Gerar_olerite
@@ -10,6 +12,9 @@ import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+# Obtém uma referência ao Firestore
+#db = firestore.client()
 
 #Criação e exibição dos dados dos cagos na tela
 class CriarCargo:
