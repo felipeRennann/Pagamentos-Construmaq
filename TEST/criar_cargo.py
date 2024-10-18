@@ -160,7 +160,7 @@ def main():
             data['desconto_transporte'] = input("Desconto de transporte: ")
             CriarFuncionario.criar_cargo(data)
         elif escolha == '2':
-            editar_cargo()
+            editar_funcionario()
         elif escolha == '3':
             break
         else:
