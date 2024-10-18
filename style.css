@@ -55,7 +55,7 @@ td{
 
 .form-container {
     background-color: rgb(253, 253, 253);
-    padding: 100px; /* Aumenta o padding do container de formulário */
+    padding: 200px; /* Aumenta o padding do container de formulário */
     border-radius: 30px;
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2); /* Aumenta a sombra */
     max-width: 1000px; /* Aumenta a largura máxima do formulário */
@@ -209,6 +209,11 @@ li {
     padding: 5px;
 }
 
+.modal.hidden {
+    display: none; /* Esconde o modal quando a classe 'hidden' estiver presente */
+    
+}
+
 
 /* Ajustes gerais para o modal fullscreen */
 .modal-fullscreen {
@@ -240,7 +245,7 @@ li {
 
 }
 #lista .form-container {
-    padding: 100px; /* Espaçamento interno */
+    padding: 40px; /* Espaçamento interno */
     margin: 0px; /* Margem externa */
     height: auto; /* Ajusta a altura conforme necessário */
     width: calc(100% - 10px); /* Define a largura, garantindo que não fique colado na borda */
@@ -470,4 +475,20 @@ iframe {
     color: #0d0e0d;
     z-index: 1000; /* Garante que fique acima de outros elementos */
     cursor: pointer; /* Altera o cursor para indicar que é clicável */
+}
+
+.close {
+    display: inline-block; /* Faz com que o span se comporte como um botão */
+    background-color: #f30d0d; /* Cor de fundo cinza */
+    color: #fff; /* Cor do texto branca */
+    border: none; /* Remove a borda */
+    border-radius: 4px; /* Bordas arredondadas */
+    padding: 8px 12px; /* Espaçamento interno */
+    font-size: 16px; /* Tamanho da fonte médio */
+    cursor: pointer; /* Muda o cursor ao passar o mouse */
+    transition: background-color 0.3s; /* Transição suave ao passar o mouse */
+}
+
+.close:hover {
+    background-color: #aaa; /* Cor mais escura ao passar o mouse */
 }
