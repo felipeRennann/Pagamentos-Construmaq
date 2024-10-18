@@ -62,5 +62,53 @@
         "valor_decimo_terceiro": 3,
         "valor_ferias": 4,
         "valor_um_terco_ferias": 3
+    },
+    "CLECIO BORGES FILHO": {
+        "numero_cpf": "00040050006",
+        "chave_pix": "teste@teste.com",
+        "valor_hora_base": 10,
+        "valor_hora_extra_um": 15,
+        "valor_hora_extra_dois": 20,
+        "repouso_remunerado": 10,
+        "adicional_noturno": 0,
+        "desconto_inss": 0,
+        "desconto_refeicao": 1,
+        "desconto_transporte": 0,
+        "pagamento_fgts": 8,
+        "valor_decimo_terceiro": 8.33,
+        "valor_ferias": 8.33,
+        "valor_um_terco_ferias": 2.77
+    },
+    "CLECIO BORGES COELHO": {
+        "numero_cpf": "00830080012",
+        "chave_pix": "teste@teste.com",
+        "valor_hora_base": 9,
+        "valor_hora_extra_um": 15,
+        "valor_hora_extra_dois": 20,
+        "repouso_remunerado": 9.01,
+        "adicional_noturno": 0,
+        "desconto_inss": 0,
+        "desconto_refeicao": 1,
+        "desconto_transporte": 0,
+        "pagamento_fgts": 8,
+        "valor_decimo_terceiro": 8.33,
+        "valor_ferias": 8.33,
+        "valor_um_terco_ferias": 2.77
+    },
+    "FELIPE TESTE": {
+        "numero_cpf": "00804086214",
+        "chave_pix": "00903098614",
+        "valor_hora_base": 89,
+        "valor_hora_extra_um": 2,
+        "valor_hora_extra_dois": 2,
+        "repouso_remunerado": 3,
+        "adicional_noturno": 2,
+        "desconto_inss": 3,
+        "desconto_refeicao": 3,
+        "desconto_transporte": 3,
+        "pagamento_fgts": 2,
+        "valor_decimo_terceiro": 2,
+        "valor_ferias": 2,
+        "valor_um_terco_ferias": 2
     }
 }

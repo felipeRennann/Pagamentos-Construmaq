@@ -136,7 +136,7 @@ def funcionarios():
             
             # Salva os cargos no arquivo
             CriarFuncionario.salvar_cargos(funcionario_dict)
-            return jsonify({"message": "Cargo cadastrado com sucesso!"}), 201
+            return jsonify({"message": "Funcionario cadastrado com sucesso!"}), 201
         
         except Exception as e:
             print(f"Erro ao cadastrar cargo: {e}")

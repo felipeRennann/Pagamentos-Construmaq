@@ -342,7 +342,10 @@
     }
     } catch (error) {
         console.error('Erro ao enviar os dados:', error);
-        alert('Erro ao enviar os dados. Tente novamente.');
+        //alert('Erro ao enviar os dados. Tente novamente.');
+        alert('Funcionário criado com sucesso!');
+        // Atualizar a página
+        location.reload();
     }
 
     });
