@@ -1,21 +1,25 @@
 import json
 import os
-from cargo import Cargo
+from cargo import Funcionario
 
 
-class CriarCargo:
-    cargos_dict = {}
-
-    @staticmethod
-    def carregar_cargos():
-        if os.path.exists('cargos.json'):
-            with open('cargos.json', 'r') as file:
-                return json.load(file)
-        return {}
+class CriarFuncionario:
+    funcionario_dict = {}
 
     @staticmethod
-    def criar_cargo(data):
-        nome = data['nome']
+    def carregar_funcionarios():
+         if os.path.exists('funcionario.json'):
+            with open('funcionario.json', 'r') as file:
+                funcionarios = json.load(file)
+                print(f"Funcionários carregados: {funcionarios}")
+                return funcionarios
+         return {}
+
+    @staticmethod
+    def criar_funcionario(data):
+        name = data['name']
+        numero_cpf = data['numero_cpf']
+        chave_pix = data['chave_pix']
         valor_hora_base = round(float(data['valor_hora_base']), 2)
         valor_hora_extra_um = round(float(data['valor_hora_extra_um']), 2)
         valor_hora_extra_dois = round(float(data['valor_hora_extra_dois']), 2)
@@ -30,61 +34,106 @@ class CriarCargo:
         desconto_refeicao = round(float(data['desconto_refeicao']), 2)
         desconto_transporte = round(float(data['desconto_transporte']), 2)
 
-        cargo = Cargo(nome, valor_hora_base, adicional_noturno, valor_hora_extra_um,
+        funcionario = Funcionario(name,numero_cpf,chave_pix,valor_hora_base, adicional_noturno, valor_hora_extra_um,
                       valor_hora_extra_dois, repouso_remunerado, valor_ferias,
                       valor_antecipa_ferias, valor_decimo_terceiro, valor_antecipa_salario,
                       pagamento_fgts, desconto_inss, desconto_refeicao, desconto_transporte)
         
-        CriarCargo.cargos_dict[nome] = cargo.to_dict()
-        CriarCargo.salvar_cargos()
-        print(f"Cargo {nome} criado com sucesso e adicionado ao dicionário.")   
+        CriarFuncionario.funcionario_dict[name] = funcionario.to_dict()
+        CriarFuncionario.salvar_funcionarios()
+        print(f"Cargo {name} criado com sucesso e adicionado ao dicionário.")  
+    
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'numero_cpf': self.numero_cpf,
+            'chave_pix': self.chave_pix,
+            'valor_hora_base': self.valor_hora_base,
+            'valor_hora_extra_um': self.valor_hora_extra_um,
+            'valor_hora_extra_dois': self.valor_hora_extra_dois,
+            'adicional_noturno': self.adicional_noturno,
+            'repouso_remunerado': self.repouso_remunerado,
+            'valor_ferias': self.valor_ferias,
+            'valor_antecipa_ferias': self.valor_antecipa_ferias,
+            'valor_decimo_terceiro': self.valor_decimo_terceiro,
+            'valor_antecipa_salario': self.valor_antecipa_salario,
+            'pagamento_fgts': self.pagamento_fgts,
+            'desconto_inss': self.desconto_inss,
+            'desconto_refeicao': self.desconto_refeicao,
+            'desconto_transporte': self.desconto_transporte
+        }        
 
    
     @staticmethod
-    def salvar_cargos():
-        with open('cargos.json', 'w') as file:
-            json.dump(CriarCargo.cargos_dict, file)
+    def salvar_funcionarios():
+        with open('funcionario.json', 'w') as file:
+            json.dump(CriarFuncionario.funcionario_dict, file)
 
-def editar_cargo():
-    # Carregar cargos
-    cargos = CriarCargo.carregar_cargos()
+def editar_funcionario():
+    # Carregar os dados dos funcionários
+    funcionarios = CriarFuncionario.carregar_funcionario()
     
-    if not cargos:
-        print("Nenhum cargo disponível para editar.")
+    if not funcionarios:
+        print("Nenhum funcionário disponível para editar.")
         return
     
-    print(f"Cargos disponíveis: {list(cargos.keys())}")
-    nome_cargo = input("Digite o nome do cargo que deseja editar: ")
-
-    if nome_cargo not in cargos:
-        print(f"Cargo {nome_cargo} não encontrado.")
+    # Exibir lista de funcionários disponíveis
+    print(f"Funcionários disponíveis: {list(funcionarios.keys())}")
+    
+    # Solicitar o nome do funcionário a ser editado
+    nome_funcionario = input("Digite o nome do funcionário que deseja editar: ")
+    
+    if nome_funcionario not in funcionarios:
+        print(f"Funcionário {nome_funcionario} não encontrado.")
         return
     
-    print(f"Cargo atual: {cargos[nome_cargo]}")
+    # Exibir os dados atuais do funcionário
+    print(f"Dados atuais do funcionário {nome_funcionario}: {funcionarios[nome_funcionario]}")
     
-    # Atualizar os valores do cargo
-    valor_hora_base = float(input("Digite o novo valor da hora base (deixe em branco para manter o valor atual): ") or cargos[nome_cargo]['valor_hora_base'])
-    valor_hora_extra_um = float(input("Digite o novo valor da hora extra 50% (deixe em branco para manter o valor atual): ") or cargos[nome_cargo]['valor_hora_extra_um'])
-    valor_hora_extra_dois = float(input("Digite o novo valor da hora extra 100% (deixe em branco para manter o valor atual): ") or cargos[nome_cargo]['valor_hora_extra_dois'])
-    adicional_noturno = float(input("Digite o novo adicional noturno (deixe em branco para manter o valor atual): ") or cargos[nome_cargo]['adicional_noturno'])
-    repouso_remunerado = float(input("Digite o novo valor do repouso remunerado (deixe em branco para manter o valor atual): ") or cargos[nome_cargo]['repouso_remunerado'])
+    # Atualizar os valores do funcionário
+    funcionario_atual = funcionarios[nome_funcionario]
     
-    # Atualizar o dicionário
-    cargos[nome_cargo] = {
+    numero_cpf = input(f"Digite o novo CPF (atual: {funcionario_atual['numero_cpf']}): ") or funcionario_atual['numero_cpf']
+    chave_pix = input(f"Digite a nova chave PIX (atual: {funcionario_atual['chave_pix']}): ") or funcionario_atual['chave_pix']
+    valor_hora_base = float(input(f"Digite o novo valor da hora base (atual: {funcionario_atual['valor_hora_base']}): ") or funcionario_atual['valor_hora_base'])
+    valor_hora_extra_um = float(input(f"Digite o novo valor da hora extra 50% (atual: {funcionario_atual['valor_hora_extra_um']}): ") or funcionario_atual['valor_hora_extra_um'])
+    valor_hora_extra_dois = float(input(f"Digite o novo valor da hora extra 100% (atual: {funcionario_atual['valor_hora_extra_dois']}): ") or funcionario_atual['valor_hora_extra_dois'])
+    adicional_noturno = float(input(f"Digite o novo adicional noturno (atual: {funcionario_atual['adicional_noturno']}): ") or funcionario_atual['adicional_noturno'])
+    repouso_remunerado = float(input(f"Digite o novo valor do repouso remunerado (atual: {funcionario_atual['repouso_remunerado']}): ") or funcionario_atual['repouso_remunerado'])
+    desconto_inss = float(input(f"Digite o novo desconto INSS (atual: {funcionario_atual['desconto_inss']}): ") or funcionario_atual['desconto_inss'])
+    desconto_refeicao = float(input(f"Digite o novo desconto de refeição (atual: {funcionario_atual['desconto_refeicao']}): ") or funcionario_atual['desconto_refeicao'])
+    desconto_transporte = float(input(f"Digite o novo desconto de transporte (atual: {funcionario_atual['desconto_transporte']}): ") or funcionario_atual['desconto_transporte'])
+    pagamento_fgts = float(input(f"Digite o novo valor do FGTS (atual: {funcionario_atual['pagamento_fgts']}): ") or funcionario_atual['pagamento_fgts'])
+    valor_decimo_terceiro = float(input(f"Digite o novo valor do 13º salário (atual: {funcionario_atual['valor_decimo_terceiro']}): ") or funcionario_atual['valor_decimo_terceiro'])
+    valor_ferias = float(input(f"Digite o novo valor das férias (atual: {funcionario_atual['valor_ferias']}): ") or funcionario_atual['valor_ferias'])
+    valor_um_terco_ferias = float(input(f"Digite o novo valor de 1/3 das férias (atual: {funcionario_atual['valor_um_terco_ferias']}): ") or funcionario_atual['valor_um_terco_ferias'])
+    
+    # Atualizar os dados do funcionário
+    funcionarios[nome_funcionario] = {
+        'numero_cpf': numero_cpf,
+        'chave_pix': chave_pix,
         'valor_hora_base': valor_hora_base,
         'valor_hora_extra_um': valor_hora_extra_um,
         'valor_hora_extra_dois': valor_hora_extra_dois,
         'adicional_noturno': adicional_noturno,
-        'repouso_remunerado': repouso_remunerado
+        'repouso_remunerado': repouso_remunerado,
+        'desconto_inss': desconto_inss,
+        'desconto_refeicao': desconto_refeicao,
+        'desconto_transporte': desconto_transporte,
+        'pagamento_fgts': pagamento_fgts,
+        'valor_decimo_terceiro': valor_decimo_terceiro,
+        'valor_ferias': valor_ferias,
+        'valor_um_terco_ferias': valor_um_terco_ferias
     }
     
-    # Salvar as alterações no arquivo JSON
-    CriarCargo.salvar_cargos()
-    print(f"Cargo {nome_cargo} atualizado com sucesso.")
+    # Salvar as alterações
+    CriarFuncionario.salvar_funcionarios(funcionarios)
+    print(f"Funcionário {nome_funcionario} atualizado com sucesso.")
+
 
 def main():
-    CriarCargo.cargos_dict = CriarCargo.carregar_cargos()
-    print(f"Cargos carregados: {CriarCargo.cargos_dict}")
+    CriarFuncionario.funcionario_dict = CriarFuncionario.carregar_funcionario()
+    print(f"Cargos carregados: {CriarFuncionario.funcionario_dict}")
     
     while True:
         print("\nMenu:")
@@ -95,7 +144,7 @@ def main():
         escolha = input("Escolha uma opção: ")
         if escolha == '1':
             data = {}
-            data['nome'] = input("Nome do cargo: ")
+            data['name'] = input("Nome do cargo: ")
             data['valor_hora_base'] = input("Valor da hora base: ")
             data['valor_hora_extra_um'] = input("Valor da hora extra 50%: ")
             data['valor_hora_extra_dois'] = input("Valor da hora extra 100%: ")
@@ -109,7 +158,7 @@ def main():
             data['desconto_inss'] = input("Desconto de INSS: ")
             data['desconto_refeicao'] = input("Desconto de refeição: ")
             data['desconto_transporte'] = input("Desconto de transporte: ")
-            CriarCargo.criar_cargo(data)
+            CriarFuncionario.criar_cargo(data)
         elif escolha == '2':
             editar_cargo()
         elif escolha == '3':

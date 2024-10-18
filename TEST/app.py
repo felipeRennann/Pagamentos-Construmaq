@@ -5,9 +5,15 @@ from datetime import datetime
 from flask_cors import CORS
 from gerar_sub_total_um import Sub_total_um
 from gerador_olerite import Gerar_olerite
-from criar_cargo import CriarCargo
+from criar_cargo import CriarFuncionario
 import json
 import os
+import logging
+
+# Configuração do logger
+logging.basicConfig(level=logging.DEBUG , filename='app.log' )  # Defina o nível de log desejado
+logger = logging.getLogger(__name__)
+
 
 
 app = Flask(__name__)
@@ -17,40 +23,42 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 #db = firestore.client()
 
 #Criação e exibição dos dados dos cagos na tela
-class CriarCargo:
-    
-    
+class CriarFuncionario:
     
     #Carregar dados cadastrados na tabela no front
     @staticmethod
-    def carregar_cargos():
+    def carregar_funcionarios():
         """Carrega os cargos do arquivo JSON."""
-        if os.path.exists('cargos.json'):
-            with open('cargos.json', 'r') as file:
+        if os.path.exists('funcionario.json'):
+            with open('funcionario.json', 'r') as file:
                 try:
                     return json.load(file)
                 except json.JSONDecodeError:
                     # Em caso de erro no arquivo JSON, retorna um dicionário vazio.
-                    print("Erro ao ler o arquivo cargos.json. O arquivo está corrompido.")
+                    print("Erro ao ler o arquivo funcionario.json. O arquivo está corrompido.")
                     return {}
         return {}
 
     @staticmethod
-    def salvar_cargos(cargos_dict):
+    def salvar_cargos(funcionario_dict):
         """Salva os cargos no arquivo JSON."""
-        with open('cargos.json', 'w') as file:
-            json.dump(cargos_dict, file, indent=4)  # Adiciona indentação para legibilidade.
+        with open('funcionario.json', 'w') as file:
+            json.dump(funcionario_dict, file, indent=4)  # Adiciona indentação para legibilidade.
 
 # Carrega cargos inicialmente
-cargos_dict = CriarCargo.carregar_cargos()
+funcionario_dict = CriarFuncionario.carregar_funcionarios()
+
 
 @app.route('/')
 def index():
     """Renderiza a página inicial."""
     return render_template('index.html')
 
-@app.route('/api/cargos', methods=['GET', 'POST'])
-def cargos():
+
+##Criação de Funcionario
+
+@app.route('/api/funcionarios', methods=['GET', 'POST'])
+def funcionarios():
     print("Requisição recebida")  # Log da requisição
 
     if request.method == 'POST':
@@ -64,7 +72,9 @@ def cargos():
 
             # Validação dos campos obrigatórios
             required_fields = [
-                'nome_cargo',
+                'nome_funcionario',
+                'numero_cpf',
+                'chave_pix',
                 'valor_hora_base',
                 'valor_hora_extra_um',
                 'valor_hora_extra_dois',
@@ -87,22 +97,29 @@ def cargos():
                 return jsonify({"message": f"Campos obrigatórios faltando: {', '.join(missing_fields)}!"}), 400
             
             # Converte os valores para float
-            for field in required_fields[1:]:  # Ignora o primeiro campo 'nome_cargo'
-                 if field in data:
+            for field in required_fields[1:]:  # Ignora o primeiro campo 'nome_funcionario'
+                if field in data:
+                   if field in ['numero_cpf', 'chave_pix']:  # Esses campos devem ser string
+                        data[field] = str(data[field])
+                
+                else:
+                     
                   try:
                         data[field] = float(data[field])
                   except ValueError:
                         return jsonify({"message": f"Valor inválido para {field}!"}), 400
             
-            # Remover espaços em branco e validar nome_cargo
-            nome = data['nome_cargo'].strip()
+            # Remover espaços em branco e validar nome Funcionario
+            nome = data['nome_funcionario'].strip()
             if not nome:
-                return jsonify({"message": "O campo nome_cargo não pode estar vazio!"}), 400
+                return jsonify({"message": "O campo nome_funcionario não pode estar vazio!"}), 400
             
-            print(f"Nome do cargo: '{nome}'")  # Log para verificar o valor de nome_cargo
+            print(f"Nome do Funcionario: '{nome}'")  # Log para verificar o valor de nome_cargo
 
-            # Atualiza o dicionário de cargos
-            cargos_dict[nome] = {
+            # Atualiza o dicionário de funcionarios
+            funcionario_dict[nome] = {
+                'numero_cpf': data['numero_cpf'],
+                'chave_pix': data['chave_pix'],           
                 'valor_hora_base': data['valor_hora_base'],
                 'valor_hora_extra_um': data['valor_hora_extra_um'],
                 'valor_hora_extra_dois': data['valor_hora_extra_dois'],
@@ -118,7 +135,7 @@ def cargos():
             }
             
             # Salva os cargos no arquivo
-            CriarCargo.salvar_cargos(cargos_dict)
+            CriarFuncionario.salvar_cargos(funcionario_dict)
             return jsonify({"message": "Cargo cadastrado com sucesso!"}), 201
         
         except Exception as e:
@@ -126,27 +143,62 @@ def cargos():
             return jsonify({"message": "Erro ao cadastrar cargo!"}), 500
 
     elif request.method == 'GET':
-        return jsonify(cargos_dict)
+        return jsonify(funcionario_dict)
+
+#Editar Funcionario 
+
+@app.route('/api/funcionario/<string:nomeFuncionario>', methods=['PUT'])
+def editar_funcionario(nomeFuncionario):
+    logger.debug(f'Tentando atualizar o funcionário: {nomeFuncionario}')
+    # Verifica se o funcionário existe
+    funcionarios_db = funcionario_dict
+    
+    logger.warning(f'Funcionário {nomeFuncionario} não encontrado')
+    if nomeFuncionario not in funcionarios_db:
+        
+        return jsonify({'message': 'Funcionário não encontrado'}), 404
+
+    # Obtém os dados do funcionário a partir da requisição
+    data = request.json
+    logger.debug(f'Dados recebidos para atualização: {data}')
+
+    # Atualiza os dados do funcionário
+    funcionarios_db[nomeFuncionario]['numero_cpf'] = data.get('cpf', funcionarios_db[nomeFuncionario]['numero_cpf'])
+    funcionarios_db[nomeFuncionario]['chave_pix'] = data.get('chave_pix', funcionarios_db[nomeFuncionario]['chave_pix'])
+    funcionarios_db[nomeFuncionario]['valor_hora_base'] = data.get('valor_hora_base', funcionarios_db[nomeFuncionario]['valor_hora_base'])
+    funcionarios_db[nomeFuncionario]['valor_hora_extra_um'] = data.get('valor_hora_extra_um', funcionarios_db[nomeFuncionario]['valor_hora_extra_um'])
+    funcionarios_db[nomeFuncionario]['valor_hora_extra_dois'] = data.get('valor_hora_extra_dois', funcionarios_db[nomeFuncionario]['valor_hora_extra_dois'])
+    funcionarios_db[nomeFuncionario]['adicional_noturno'] = data.get('adicional_noturno', funcionarios_db[nomeFuncionario]['adicional_noturno'])
+    funcionarios_db[nomeFuncionario]['repouso_remunerado'] = data.get('repouso_remunerado', funcionarios_db[nomeFuncionario]['repouso_remunerado'])
+    funcionarios_db[nomeFuncionario]['valor_ferias'] = data.get('valor_ferias', funcionarios_db[nomeFuncionario]['valor_ferias'])
+    funcionarios_db[nomeFuncionario]['valor_um_terco_ferias'] = data.get('valor_um_terco_ferias', funcionarios_db[nomeFuncionario]['valor_um_terco_ferias'])
+    funcionarios_db[nomeFuncionario]['valor_decimo_terceiro'] = data.get('valor_decimo_terceiro', funcionarios_db[nomeFuncionario]['valor_decimo_terceiro'])
+    funcionarios_db[nomeFuncionario]['pagamento_fgts'] = data.get('pagamento_fgts', funcionarios_db[nomeFuncionario]['pagamento_fgts'])
+    funcionarios_db[nomeFuncionario]['desconto_inss'] = data.get('desconto_inss', funcionarios_db[nomeFuncionario]['desconto_inss'])
+    funcionarios_db[nomeFuncionario]['desconto_refeicao'] = data.get('desconto_refeicao', funcionarios_db[nomeFuncionario]['desconto_refeicao'])
+    funcionarios_db[nomeFuncionario]['desconto_transporte'] = data.get('desconto_transporte', funcionarios_db[nomeFuncionario]['desconto_transporte'])
+     
+    logger.info(f'Funcionário {nomeFuncionario} atualizado com sucesso: {funcionarios_db[nomeFuncionario]}')
+    return jsonify({'message': 'Funcionário atualizado com sucesso', 'data': funcionarios_db[nomeFuncionario]}), 200
+
+
 
    
- # Metodo criar funcionario e o gatilho para gerar o olerite
-@app.route('/api/criar_funcionario', methods=['POST'])
-def criar_funcionario():
-        app.logger.info(f"Headers: {request.headers}")
-        app.logger.info(f"Data: {request.data}")
+ # Metodo criar funcionario e o gatilho para gerar o olerite #
+@app.route('/api/criar_recibo', methods=['POST'])
+def criar_recibo():
         
         data = request.json 
         
         #1 logg
-        app.logger.info(f"Dados recebidos: {data}")
+        app.logger.info(f"Dados recebidos pelo back: {data}")
 
-        required_fields = [ 'data_inicio','data_fim','nome_funcionario', 'cargo_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'desc_refeicao', 'correcao_positiva', 'correcao_negativa']
+        required_fields = [ 'data_inicio','data_fim','nome_cargo', 'name_funcionario', 'horas_trabalhadas','repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'correcao_positiva', 'correcao_negativa']
         
         # Verifica se os dados obrigatórios estão presentes
         if not data or any(field not in data for field in required_fields):
             #Loggs
-            app.logger.info(f"Dados recebidos: {data}")
-            app.logger.error('Dados obrigatórios faltando: %s', data)
+            
             return jsonify({'error': 'Dados obrigatórios faltando!'}), 400
         
             # Validação de data
@@ -160,20 +212,23 @@ def criar_funcionario():
 
         # Converte valores de horas para float
         try:
-            for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'desc_refeicao', 'correcao_positiva', 'correcao_negativa']:
+            for field in ['horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'repouso_remunerado', 'correcao_positiva', 'correcao_negativa']:
                 data[field] = float(data[field])
         except ValueError as e:
             app.logger.error(f"Erro ao converter valores: {e}")
             return jsonify({'error': 'Valores de horas devem ser numéricos!'}), 400
 
-        cargo_id = data['cargo_funcionario']
-        cargo = cargos_dict.get(cargo_id)
+        funcionario_id= data['name_funcionario']
+        funcionario = funcionario_dict.get(funcionario_id)
 
-        if not cargo:
-            return jsonify({'error': 'Cargo não encontrado!'}), 404   
+        if not funcionario:
+            return jsonify({'error': 'Funcionario não encontrado!'}), 404   
 
         # Cria o objeto funcionario com base nos dados recebidos
-        funcionario = Sub_total_um(data['nome_funcionario'], cargo_id, data['data_inicio'], data['data_fim'])
+        
+        data = request.get_json()  # Ou request.form se for um form HTML
+        print(f"Dados da requisição: {data}")
+        funcionario = Sub_total_um(data['nome_cargo'], funcionario_id, data['data_inicio'], data['data_fim'])
 
         # Adicionando as horas e outros dados   
         funcionario.adicionar_horas_trabalhadas(data['horas_trabalhadas'])
@@ -181,32 +236,38 @@ def criar_funcionario():
         funcionario.adicionar_horas_noturnas(data['horas_noturnas'])
         funcionario.adicionar_horas_extras_um(data['horas_extras_um'])
         funcionario.adicionar_horas_extras_dois(data['horas_extras_dois'])
-        funcionario.adicionar_desc_refeicao(data['desc_refeicao']) 
         funcionario.adicionar_correcao_positiva(data['correcao_positiva']) 
         funcionario.adicionar_correcao_negativa(data['correcao_negativa']) 
          
 
         # Gerar o olerite
         olerite = Gerar_olerite(funcionario)
-        buffer =   olerite.gerar_sub_um()
+        buffer = olerite.gerar_sub_um()
         
-        return send_file(buffer, as_attachment=True, download_name='olerite.pdf', mimetype='application/pdf')
+        return send_file(buffer, as_attachment=True, download_name='recibo.pdf', mimetype='application/pdf')
 
     
-@app.route('/api/cargos/<cargo_id>', methods=['GET'])
-def get_cargo(cargo_id):
+@app.route('/api/funcionarios/<funcionario_id>', methods=['GET'])
+def get_funcionario(funcionario_id):
         # Supondo que você tenha um dicionário que armazena os cargos
-    global cargos_dict 
-    cargo = cargos_dict.get(cargo_id)
+    global funcionario_dict 
+    funcionario = funcionario_dict.get(funcionario_id)
 
-    if cargo:
-        return jsonify(cargo)
+    if funcionario:
+        return jsonify(funcionario)
     else:
-        return jsonify({'error': 'Cargo não encontrado!'}), 404
+        return jsonify({'error': 'funcionario não encontrado!'}), 404
 
 
 
-#Novo- Criar cargo 
+#Editar Funcionario 
+
+@app.route('/api/funcionarios/<int:id>', methods=['PUT'])
+def update_funcionario(id):
+    data = request.get_json()
+    # Atualize os dados do funcionário no banco de dados
+    return jsonify({'message': 'Funcionário atualizado com sucesso.'})
+
 
 
 

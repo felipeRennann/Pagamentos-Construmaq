@@ -1,22 +1,27 @@
-from criar_cargo import CriarCargo
+from criar_cargo import CriarFuncionario
+import logging
 
-cargos_dict = CriarCargo.carregar_cargos()
 
+
+funcionario_dict = CriarFuncionario.carregar_funcionarios()
+
+
+# Valida se os dados foram carregados corretamente
 class Sub_total_um:
-    def __init__(self, nome, nome_cargo,data_inicio,data_fim):
-        self.data_inicio=data_inicio
-        self.data_fim=data_fim
-        self.nome = nome
-        self.nome_cargo = nome_cargo
+    def __init__(self, nome_cargo, name_funcionario,data_inicio,data_fim):
+        self.nome_cargo= nome_cargo
+        self.name_funcionario = name_funcionario
+        self.data_inicio= data_inicio
+        self.data_fim= data_fim
         self.horas_trabalhadas = 0
         self.horas_extras_um = 0
         self.horas_extras_dois = 0
         self.horas_noturnas = 0
         self.repouso_remunerado = 0
         self.valor_ferias=0
-        self.desc_refeicao = 0
         self.correcao_positiva=0
         self.correcao_negativa=0
+        
         
 
     
@@ -34,15 +39,9 @@ class Sub_total_um:
 
     def adicionar_horas_noturnas(self, horas):
         self.horas_noturnas += horas 
-    
-    def adicionar_adiantamento_salarial(self,valor):
-        self.adiantamento_sal += valor
         
     def adicionar_pagamento_ferias(self,valor):
-        self.valor_ferias += valor
-        
-    def adicionar_desc_refeicao(self,valor):
-        self.desc_refeicao  += valor        
+        self.valor_ferias += valor       
         
     def adicionar_correcao_positiva(self,valor):
         self.correcao_positiva += valor        
@@ -51,35 +50,41 @@ class Sub_total_um:
         self.correcao_negativa += valor         
         
         
-    def valida_cargo(self):
-        print(f"Cargos disponíveis: {list(cargos_dict.keys())}")
-        cargo_normalizado = self.nome_cargo.strip().lower()
+    def valida_funcionario(self):
+        print(f"Cargos disponíveis: {list(funcionario_dict.keys())}")
+        funcionario_normalizado = self.name_funcionario.strip().lower()
         # Normaliza o dicionário de cargos para comparação
-        cargos_dict_normalizado = {k.strip().lower(): v for k, v in cargos_dict.items()}
+        funcionario_dict_normalizado = {k.strip().lower(): v for k, v in funcionario_dict.items()}
         
-        if cargo_normalizado in cargos_dict_normalizado:
-            self.cargo = cargos_dict_normalizado[cargo_normalizado]  # Armazena o objeto Cargo
+        if funcionario_normalizado in funcionario_dict_normalizado:
+            self.funcionario = funcionario_dict_normalizado[funcionario_normalizado]  # Armazena o objeto Funcionario
         else:
-            print("Cargo não encontrado!")
+            print("Funcionario não encontrado!")
             return False  # Retorna False se não encontrar o cargo
         return True  # Retorna True se encontrar o cargo
     
-    def calcular_pagamento_um(self):
-        if not self.valida_cargo():  # Verifica se o cargo é válido
-            return 0  # Se não for válido, retorna 0
+    def calcular_pagamento_um(self)-> dict:
+        if not self.valida_funcionario():
+            logging.error("Validação do funcionário falhou.")
+            return {
+            'sub_total_tres': 0.00,
+            'sub_total_um': 0.00,
+            'sub_total_dois': 0.00
+        }
         
-        valor_hora_base = self.cargo['valor_hora_base']
-        valor_repouso_remunerado = self.cargo['repouso_remunerado']
-        valor_hora_extra_um = self.cargo['valor_hora_extra_um']
-        valor_hora_extra_dois = self.cargo['valor_hora_extra_dois']
-        adicional_noturno = self.cargo['adicional_noturno']
-        valor_ferias = self.cargo['valor_ferias']
-        valor_antecipa_ferias = self.cargo['valor_um_terco_ferias']
-        valor_decimo_terceito = self.cargo['valor_decimo_terceiro']
-        pagamento_fgts = self.cargo['pagamento_fgts']
-        desconto_inss = self.cargo['desconto_inss']
-        desconto_refeicao = self.cargo['desconto_refeicao']
-        desconto_transporte = self.cargo['desconto_transporte']
+        valor_hora_base = self.funcionario['valor_hora_base']
+        valor_repouso_remunerado = self.funcionario['repouso_remunerado']
+        valor_hora_extra_um = self.funcionario['valor_hora_extra_um']
+        valor_hora_extra_dois = self.funcionario['valor_hora_extra_dois']
+        adicional_noturno = self.funcionario['adicional_noturno']
+        valor_ferias = self.funcionario['valor_ferias']
+        valor_antecipa_ferias = self.funcionario['valor_um_terco_ferias']
+        valor_decimo_terceito = self.funcionario['valor_decimo_terceiro']
+        pagamento_fgts = self.funcionario['pagamento_fgts']
+        desconto_inss = self.funcionario['desconto_inss']
+        desconto_refeicao =self.funcionario['desconto_refeicao']
+        desconto_transporte = self.funcionario['desconto_transporte']
+        
             
         #SUB-TATAL 1
         pagamento_base = self.horas_trabalhadas * valor_hora_base
@@ -107,8 +112,8 @@ class Sub_total_um:
         #SUB-TOTAL 3
         
         sub_total_dois_seis = sub_total_dois * (desconto_inss/100)
-        sub_total_dois_sete = self.desc_refeicao * desconto_refeicao
-        sub_total_dois_oito = desconto_transporte
+        sub_total_dois_sete = (pagamento_base + pagamento_folga_remunerada) * desconto_refeicao/100
+        sub_total_dois_oito = (pagamento_base + pagamento_folga_remunerada) * desconto_transporte /100
         sub_total_dois_nove = self.correcao_positiva
         sub_total_dois_dez = self.correcao_negativa
         

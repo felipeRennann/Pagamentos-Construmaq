@@ -12,26 +12,29 @@
     document.addEventListener('DOMContentLoaded', () => {
         console.log("DOM carregado, buscando cargos...");
         fetchCargos();
+        document.getElementById('name_funcionario').value = '';
         showTab('lista'); // Mostra a aba de cargos ao carregar
     });
+    
+    
+
 
     async function fetchCargos() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/cargos'); 
+            const response = await fetch('http://127.0.0.1:5000/api/funcionarios'); 
             if (!response.ok) throw new Error('Network response was not ok');
-            const cargos = await response.json();
+            const funcionarios = await response.json();
+            console.log("Cargos recebidos da API teste:", funcionarios);
+        
             
-            
-            console.log("Cargos recebidos da API:", cargos); 
-            
-            const cargoSelect = document.getElementById('cargo_funcionario');
-            const listaCargos = document.getElementById('lista-cargos');
+            const funcionarioSelect = document.getElementById('name_funcionario');
+            const listaFuncionarios = document.getElementById('lista-funcionarios');
 
-            console.log("Elemento cargo_funcionario:", cargoSelect);
-            console.log("Elemento lista-cargos:", listaCargos);
+            console.log("Elemento name_funcionario:", funcionarioSelect);
+            console.log("Elemento lista-funcionarios:", listaFuncionarios);
 
-            cargoSelect.innerHTML = ''; // Limpa as opções existentes
-            listaCargos.innerHTML = ''; // Limpa a lista existente
+            funcionarioSelect.innerHTML = ''; // Limpa as opções existentes
+            listaFuncionarios.innerHTML = ''; // Limpa a lista existente
             //listaCargos.appendChild(table); // Adiciona a tabela ao elemento
 
 
@@ -42,7 +45,9 @@
             table.innerHTML = `
                 <thead>
                     <tr>
-                        <th>Cargo</th>
+                        <th>Funcionario</th>
+                        <th>CPF</th>
+                        <th>Chave PIX</th>
                         <th>Hora Base (%)</th>
                         <th>Repouso Remunerado (%)</th>
                         <th>Hora Extra 50%</th>
@@ -63,72 +68,231 @@
             const tableBody = table.querySelector('tbody');
             
             // Itera sobre as chaves do objeto cargos
-            for (const key in cargos) {
-                if (cargos.hasOwnProperty(key)) {
-                    const cargo = cargos[key];  
-                    console.log("Preenchendo cargo:", key, cargo); // Adicione este log
+            for (const key in funcionarios) {
+                if (funcionarios.hasOwnProperty(key)) {
+                    const funcionario = funcionarios[key];  
+                    console.log("Preenchendo Funcionarios", key, funcionario); // Adicione este log
 
                     // Preenche a tabela com os dados do cargo
                     const row = tableBody.insertRow();
-            row.insertCell(0).innerText = key; // Cargo
-            row.insertCell(1).innerText = (parseFloat(cargo.valor_hora_base) || 0).toFixed(2); // Valor Hora Base
-            row.insertCell(2).innerText = (parseFloat(cargo.repouso_remunerado) || 0).toFixed(2); // Vl. Repouso Remunerado
-            row.insertCell(3).innerText = (parseFloat(cargo.valor_hora_extra_um) || 0).toFixed(2); // Valor Hora Extra de 50%
-            row.insertCell(4).innerText = (parseFloat(cargo.valor_hora_extra_dois) || 0).toFixed(2); // Valor Hora Extra de 100%
-            row.insertCell(5).innerText = (parseFloat(cargo.adicional_noturno) || 0).toFixed(2); // Vl. Ad. Noturno
-            row.insertCell(6).innerText = (parseFloat(cargo.valor_ferias) || 0).toFixed(2); // Valor Férias
-            row.insertCell(7).innerText = (parseFloat(cargo.valor_um_terco_ferias) || 0).toFixed(2); // 1/3 Férias
-            row.insertCell(8).innerText = (parseFloat(cargo.valor_decimo_terceiro) || 0).toFixed(2); // 13º Salário
-            row.insertCell(9).innerText = (parseFloat(cargo.pagamento_fgts) || 0).toFixed(2); // Pagamento FGTS
-            row.insertCell(10).innerText = (parseFloat(cargo.desconto_inss) || 0).toFixed(2); // Desconto INSS
-            row.insertCell(11).innerText = (parseFloat(cargo.desconto_refeicao) || 0).toFixed(2); // Desconto Refeição
-            row.insertCell(12).innerText = (parseFloat(cargo.desconto_transporte) || 0).toFixed(2); // Desconto Transporte
+            row.insertCell(0).innerText = key; // funcionario
+            row.insertCell(1).innerText = funcionario.numero_cpf;
+            row.insertCell(2).innerText = funcionario.chave_pix;
+            row.insertCell(3).innerText = (parseFloat(funcionario.valor_hora_base) || 0).toFixed(2); // Valor Hora Base
+            row.insertCell(4).innerText = (parseFloat(funcionario.repouso_remunerado) || 0).toFixed(2); // Vl. Repouso Remunerado
+            row.insertCell(5).innerText = (parseFloat(funcionario.valor_hora_extra_um) || 0).toFixed(2); // Valor Hora Extra de 50%
+            row.insertCell(6).innerText = (parseFloat(funcionario.valor_hora_extra_dois) || 0).toFixed(2); // Valor Hora Extra de 100%
+            row.insertCell(7).innerText = (parseFloat(funcionario.adicional_noturno) || 0).toFixed(2); // Vl. Ad. Noturno
+            row.insertCell(8).innerText = (parseFloat(funcionario.valor_ferias) || 0).toFixed(2); // Valor Férias
+            row.insertCell(9).innerText = (parseFloat(funcionario.valor_um_terco_ferias) || 0).toFixed(2); // 1/3 Férias
+            row.insertCell(10).innerText = (parseFloat(funcionario.valor_decimo_terceiro) || 0).toFixed(2); // 13º Salário
+            row.insertCell(11).innerText = (parseFloat(funcionario.pagamento_fgts) || 0).toFixed(2); // Pagamento FGTS
+            row.insertCell(12).innerText = (parseFloat(funcionario.desconto_inss) || 0).toFixed(2); // Desconto INSS
+            row.insertCell(13).innerText = (parseFloat(funcionario.desconto_refeicao) || 0).toFixed(2); // Desconto Refeição
+            row.insertCell(14).innerText = (parseFloat(funcionario.desconto_transporte) || 0).toFixed(2); // Desconto Transporte
 
+                     
                     // Preenche o select com as opções de cargos
                     const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = key;
-                    cargoSelect.appendChild(option);
+                    option.value =key;
+                    option.textContent =key;
+                    funcionarioSelect.appendChild(option);
+                    console.log("dados chegando", key, funcionario); // Adicione este log
+
+                    // Log atualizado para verificar se as opções foram criadas corretamente
+                    ;console.log(`Criando option para o funcionário com chave: ${key}`, {
+                        id: option.value,
+                        nome: option.textContent
+                    })
+
+                    // Adiciona botão de editar
+                    const actionsCell = row.insertCell(15);
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'Editar';
+                    editButton.onclick = () =>  {
+                        const nomeFuncionario = key; // Nome do funcionário
+                        const cpfFuncionario = funcionario.numero_cpf; // CPF do funcionário
+                        const chavePix = funcionario.chave_pix
+                        const valorHoraBase = funcionario.valor_hora_base
+                        const valorHoraExtraUm = funcionario.valor_hora_extra_um
+                        const valorHoraExtraDois = funcionario.horas_extras_dois
+                        const adicionalNoturno = funcionario.adicional_noturno
+                        const repousoRemunerado = funcionario.repouso_remunerado
+                        const valorFerias = funcionario.valor_ferias
+                        const valorUmTercoFerias = funcionario.valor_um_terco_ferias
+                        const valorDecimoTerceiro = funcionario.valor_decimo_terceiro
+                        const pagamentoFgts = funcionario.pagamento_fgts
+                        const descontoInss = funcionario.desconto_inss
+                        const descontoRefeicao = funcionario.desconto_refeicao
+                        const descontoTransporte = funcionario.desconto_transporte
+
+                        editarFuncionarioModal(nomeFuncionario, cpfFuncionario, chavePix,valorHoraBase, 
+                            valorHoraExtraUm, valorHoraExtraDois,adicionalNoturno, repousoRemunerado, 
+                            valorFerias, valorUmTercoFerias, valorDecimoTerceiro, pagamentoFgts, 
+                            descontoInss, descontoRefeicao, descontoTransporte);
+                    }
+                    
+                    actionsCell.appendChild(editButton);
                 }
             }
             
+
             // Exibe a tabela na página (assumindo que você tenha um elemento para isso)
-            listaCargos.appendChild(table);
+            
+            listaFuncionarios.appendChild(table);
             console.log("Tabela adicionada ao DOM:", table); // Adicione este log
 
         } catch (error) {
             console.error("Erro ao buscar cargos:", error);
         }
     }
+                
+        // Função para filtrar os funcionários pelo nome e cpf
+        function filterFuncionarios() {
+            const searchValue = document.getElementById('search-funcionario').value.toLowerCase();
+            const rows = document.querySelectorAll('#lista-funcionarios table tbody tr');
 
-    // Criar cargo 
-    document.getElementById('cargo-form').addEventListener('submit', async function(event) {
+            rows.forEach(row => {
+                const nomeFuncionario = row.cells[0].innerText.toLowerCase();
+                const cpfFuncionario = row.cells[1].innerText.toLowerCase();
+                row.style.display = nomeFuncionario.includes(searchValue) || cpfFuncionario.includes(searchValue) ? '' : 'none'
+            });
+        }
+ 
+    let isEditMode = false;    
+    // Editar Funcionario 
+    function editarFuncionarioModal(nomeFuncionario, cpfFuncionario, chavePix, valorHoraBase, valorHoraExtraUm,  
+        valorHoraExtraDois, adicionalNoturno, repousoRemunerado, valorFerias, valorUmTercoFerias, valorDecimoTerceiro,
+         pagamentoFgts, descontoInss, descontoRefeicao, descontoTransporte ) {
+        // Abrir o modal
+        
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'block';
+
+        // Preencher os campos do modal com os dados do funcionário
+        document.getElementById('nome_funcionario').value = nomeFuncionario;
+        document.getElementById('numero_cpf').value = cpfFuncionario; // CPF do funcionário
+        document.getElementById('chave_pix').value = chavePix; // Chave PIX
+        document.getElementById('valor_hora_base').value = (parseFloat(valorHoraBase) || 0).toFixed(2); // Valor Hora Base
+        document.getElementById('valor_hora_extra_um').value = (parseFloat(valorHoraExtraUm) || 0).toFixed(2); // Hora Extra 50%
+        document.getElementById('valor_hora_extra_dois').value = (parseFloat(valorHoraExtraDois) || 0).toFixed(2); // Hora Extra 100%
+        document.getElementById('adicional_noturno').value = (parseFloat(adicionalNoturno) || 0).toFixed(2); // Adicional Noturno
+        document.getElementById('repouso_remunerado').value = (parseFloat(repousoRemunerado) || 0).toFixed(2); // Repouso Remunerado
+        document.getElementById('valor_ferias').value = (parseFloat(valorFerias) || 0).toFixed(2); // Férias
+        document.getElementById('valor_um_terco_ferias').value = (parseFloat(valorUmTercoFerias) || 0).toFixed(2); // 1/3 Férias
+        document.getElementById('valor_decimo_terceiro').value = (parseFloat(valorDecimoTerceiro) || 0).toFixed(2); // 13º Salário
+        document.getElementById('pagamento_fgts').value = (parseFloat(pagamentoFgts) || 0).toFixed(2); // FGTS
+        document.getElementById('desconto_inss').value = (parseFloat(descontoInss) || 0).toFixed(2); // INSS
+        document.getElementById('desconto_refeicao').value = (parseFloat(descontoRefeicao) || 0).toFixed(2); // Refeição
+        document.getElementById('desconto_transporte').value = (parseFloat(descontoTransporte) || 0).toFixed(2); // Transporte
+        
+        
+        // Armazenar o ID do funcionário no formulário para edição
+        //document.getElementById('funcionario-form').setAttribute('data-id', nomeFuncionario);
+        isEditMode = true;
+    }
+    
+    // Função para fechar o modal
+    document.querySelector('.close').onclick = function() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    // Função para salvar as edições do funcionário
+    document.getElementById('editForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Impede o envio padrão do formulário
+
+        const nomeFuncionario = document.getElementById('nome_funcionario').value.trim(); // Obtém o nome do funcionário
+        const formData = {
+            numero_cpf: document.getElementById('numero_cpf').value.trim(),
+            chave_pix: document.getElementById('chave_pix').value.trim(),
+            valor_hora_base: parseFloat(document.getElementById('valor_hora_base').value),
+            valor_hora_extra_um: parseFloat(document.getElementById('valor_hora_extra_um').value),
+            valor_hora_extra_dois: parseFloat(document.getElementById('valor_hora_extra_dois').value),
+            adicional_noturno: parseFloat(document.getElementById('adicional_noturno').value),
+            repouso_remunerado: parseFloat(document.getElementById('repouso_remunerado').value),
+            valor_ferias: parseFloat(document.getElementById('valor_ferias').value),
+            valor_um_terco_ferias: parseFloat(document.getElementById('valor_um_terco_ferias').value),
+            valor_decimo_terceiro: parseFloat(document.getElementById('valor_decimo_terceiro').value),
+            pagamento_fgts: parseFloat(document.getElementById('pagamento_fgts').value),
+            desconto_inss: parseFloat(document.getElementById('desconto_inss').value),
+            desconto_refeicao: parseFloat(document.getElementById('desconto_refeicao').value),
+            desconto_transporte: parseFloat(document.getElementById('desconto_transporte').value),
+        };
+    
+    console.log('Dados do funcionário antes do envio:', formData);
+         // Enviar dados para o backend para edição
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/funcionario/${nomeFuncionario}`, {
+            method: 'PUT', // Alterando para PUT para atualização
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            // Tentar pegar o erro como JSON, se possível
+            let errorMessage;
+            try {
+                const error = await response.json();
+                errorMessage = error.message || 'Erro desconhecido';
+            } catch (jsonError) {
+                // Caso não consiga converter para JSON, pega o erro como texto
+                errorMessage = await response.text();
+            }
+
+            // Exibir o erro capturado
+            alert(`Erro: ${errorMessage}`);
+            throw new Error(`Erro na atualização: ${errorMessage}`);
+        }
+
+        const result = await response.json();
+        console.log('Sucesso:', result);
+        alert('Funcionário atualizado com sucesso!');
+
+        // Fechar o modal
+        $('#editModal').modal('hide');
+
+        // Atualizar a página
+        location.reload();
+
+    } catch (error) {
+        console.error('Erro ao salvar os dados:', error);
+        alert('Erro ao salvar os dados. Tente novamente.');
+    }
+});
+        
+
+
+
+    // Criar Funcionario 
+    document.getElementById('funcionario-form').addEventListener('submit', async function(event) {
     event.preventDefault(); // Impede o envio padrão do formulário
 
-
-
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.target);    
     //const cargoData = Object.fromEntries(formData);
 
-    const cargoData = {
-    nome_cargo: document.getElementById('nome_cargo').value.trim(),
-    valor_hora_base: parseFloat(document.getElementById('valor_hora_base').value),
-    valor_hora_extra_um: parseFloat(document.getElementById('valor_hora_extra_um').value),
-    valor_hora_extra_dois: parseFloat(document.getElementById('valor_hora_extra_dois').value),
-    adicional_noturno: parseFloat(document.getElementById('adicional_noturno').value),
-    repouso_remunerado: parseFloat(document.getElementById('repouso_remunerado').value),
-    desconto_inss: parseFloat(document.getElementById('desconto_inss').value),
-    desconto_refeicao: parseFloat(document.getElementById('desconto_refeicao').value),
-    desconto_transporte: parseFloat(document.getElementById('desconto_transporte').value),
-    pagamento_fgts: parseFloat(document.getElementById('pagamento_fgts').value),
-    valor_decimo_terceiro: parseFloat(document.getElementById('valor_decimo_terceiro').value),
-    valor_ferias: parseFloat(document.getElementById('valor_ferias').value),
-    valor_um_terco_ferias: parseFloat(document.getElementById('valor_um_terco_ferias').value),
+    const funcionariData = {
+    nome_funcionario: document.getElementById('nome_funcionario_c').value.trim(),
+    numero_cpf: document.getElementById('numero_cpf_c').value.trim(),
+    chave_pix: document.getElementById('chave_pix_c').value.trim(),
+    valor_hora_base: parseFloat(document.getElementById('valor_hora_base_c').value),
+    valor_hora_extra_um: parseFloat(document.getElementById('valor_hora_extra_um_c').value),
+    valor_hora_extra_dois: parseFloat(document.getElementById('valor_hora_extra_dois_c').value),
+    adicional_noturno: parseFloat(document.getElementById('adicional_noturno_c').value),
+    repouso_remunerado: parseFloat(document.getElementById('repouso_remunerado_c').value),
+    desconto_inss: parseFloat(document.getElementById('desconto_inss_c').value),
+    desconto_refeicao: parseFloat(document.getElementById('desconto_refeicao_c').value),
+    desconto_transporte: parseFloat(document.getElementById('desconto_transporte_c').value),
+    pagamento_fgts: parseFloat(document.getElementById('pagamento_fgts_c').value),
+    valor_decimo_terceiro: parseFloat(document.getElementById('valor_decimo_terceiro_c').value),
+    valor_ferias: parseFloat(document.getElementById('valor_ferias_c').value),
+    valor_um_terco_ferias: parseFloat(document.getElementById('valor_um_terco_ferias_c').value),
     };
 
 
     // Log do cargoData
-    console.log('Dados do Cargo:', cargoData); // Aqui está o log
+    console.log('Dados do Funcionario 1:',funcionariData); // Aqui está o log
 
 
     const numericFields = [
@@ -148,49 +312,106 @@
 
     // Captura os dados do formulário
     numericFields.forEach(field => {    
-    cargoData[field] = parseFloat(cargoData[field]) || 0; // Corrigido para usar 'field'
+    funcionariData[field] = parseFloat(funcionariData[field]) || 0; // Corrigido para usar 'field'
     });
-
-    console.log(cargoData.nome_cargo); 
-    console.log(cargoData);
-    console.log(typeof cargoData.valor_hora_base); // Deve ser 'number'
 
     // Envie os dados para o backend
     try{
-    const response = await fetch('http://127.0.0.1:5000/api/cargos', {
+    const response = await fetch('http://127.0.0.1:5000/api/funcionarios', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(cargoData)
+        body: JSON.stringify(funcionariData)
     });
 
     if (response.ok) {
         const data = await response.json();
         document.getElementById('message').textContent = data.message;  // Mensagem de sucesso
         fetchCargos();  // Atualiza a lista de cargos
-        messageDiv.textContent = data.message; // Mensagem de sucesso
-        messageDiv.style.display = 'block'; // Mostra a mensagem
 
+        alert('Funcionário criado com sucesso!');
+        // Atualizar a página
+        location.reload();
 
-        // Ocultar a mensagem após 5 segundos e recarregar a página
-        setTimeout(() => {
-            messageDiv.style.display = 'none'; // Esconde a mensagem
-            location.reload(); // Recarrega a página
-        }, 5000); // 5000 milissegundos = 5 segundos
+        
 
     } else {
         const error = await response.json();
-        document.getElementById('message').textContent = error.message;  // Mensagem de erro
-        messageDiv.style.display = 'block'; // Mostra a mensagem de erro
+        alert(`Erro: ${error.message}`);
     }
     } catch (error) {
         console.error('Erro ao enviar os dados:', error);
-        messageDiv.textContent = 'Erro ao enviar os dados. Tente novamente.';
-        messageDiv.style.display = 'block'; // Mostra a mensagem de erro
+        alert('Erro ao enviar os dados. Tente novamente.');
     }
 
     });
+
+     // Select do funcionario com busca -> Preparação 
+     $(document).ready(function() {
+
+        $('#name_funcionario').append(new Option("Selecione um funcionário", "", false, false));
+        // Inicializa o Select2 no select
+        $('#name_funcionario').select2({
+            placeholder: "Selecione um funcionário",
+            allowClear: true,
+            width: 'resolve',  // Ajusta a largura conforme o container pai
+            dropdownParent: $('#name_funcionario').parent() // Define onde o dropdown será renderizado
+        });
+    
+        // Função para carregar funcionários
+        async function loadFuncionarios() {
+            const response = await fetch('http://127.0.0.1:5000/api/funcionarios'); // Atualize para o seu endpoint
+            if (!response.ok) {
+                console.error('Erro ao carregar funcionários:', response.statusText);
+                return;
+            }
+            const funcionario = await response.json();
+
+           console.log(funcionario); // Adicione esta linh
+            // Se a resposta é um objeto, transforme-o em um array
+         const funcionariosArray = Array.isArray(funcionario) ? funcionario : [funcionario];
+
+            
+            // Preenche o select
+            funcionariosArray.forEach(funcionario=> {
+                const option = new Option(funcionario.nome, funcionario.id, false, false);
+                $('#name_funcionario').append(new Option("", "", false, false));
+                $('#name_funcionario').append(option);
+            });
+            
+            // Atualiza o Select2 com os novos dados
+            $('#name_funcionario').trigger('change');
+        }
+    
+        // Carregar funcionários quando a página for carregada
+        loadFuncionarios();
+    });
+ 
+
+
+    //Busca de Funcionarios na lista 
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.querySelector('#lista-funcionarios tbody');
+    
+        // Função para filtrar funcionários
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+    
+            Array.from(rows).forEach(row => {
+                const funcionarioName = row.getElementsByTagName('td')[0].textContent.toLowerCase();
+                if (funcionarioName.includes(searchTerm)) {
+                    row.style.display = '';  // Mostra a linha
+                } else {
+                    row.style.display = 'none';  // Esconde a linha
+                }
+            });
+        });
+    });
+    
+
 
 
 
@@ -198,19 +419,26 @@
     // Cadastro para pagamento e imprimir PDF -> Gerador do PDF
     document.getElementById('gerarDocumentoButton').addEventListener('click', async function(event) {
     event.preventDefault();
-    const formData = new FormData(document.getElementById('funcionario-form'));
-    const funcionarioData = Object.fromEntries(formData);
+    const formData = new FormData(document.getElementById('recibo-form'));
+    const reciboData = Object.fromEntries(formData);
+    console.log('Recebido do forme', formData, reciboData)
 
-    const cargoSelect = document.getElementById('cargo_funcionario');
-    const cargoId = cargoSelect.value;
+    const funcionariSelect = document.getElementById('name_funcionario');
+    const funcionarioId = funcionariSelect.value;
+
+     // Verifica se um funcionário foi selecionado
+    if (!funcionarioId) {
+        console.error('Por favor, selecione um funcionário.');
+        return;
+    }
 
     // Fetch para obter os dados do cargo
-    const cargoResponse = await fetch(`http://127.0.0.1:5000/api/cargos/${cargoId}`);
-    if (!cargoResponse.ok) {
-    console.error('Erro ao buscar dados do cargo:', cargoResponse.statusText);
+    const funcionarioResponse = await fetch(`http://127.0.0.1:5000/api/funcionarios/${funcionarioId}`);
+    if (!funcionarioResponse.ok) {
+    console.error('Erro ao buscar dados funcionario:', funcionarioResponse.statusText);
     return;
     }
-    const cargo = await cargoResponse.json();
+    const funcionario = await funcionarioResponse.json();
 
     //Definir um valor default em caso de valor zerado ou null
     const checkAndParse = (value) => {  
@@ -223,32 +451,37 @@
     const [year, month, day] = dateString.split('-');
     return `${day}-${month}-${year}`; // Formato DD/MM/YYYY
     };
-
-    // Adicione os dados do cargo ao objeto funcionarioData
-
-    funcionarioData.horas_trabalhadas = checkAndParse(funcionarioData.horas_trabalhadas, 10,);
-    funcionarioData.horas_extras_um = checkAndParse(funcionarioData.horas_extras_um, 10);
-    funcionarioData.horas_extras_dois = checkAndParse(funcionarioData.horas_extras_dois, 10);
-    funcionarioData.horas_noturnas = checkAndParse(funcionarioData.horas_noturnas, 10);
-    funcionarioData.repouso_remunerado = checkAndParse(funcionarioData.repouso_remunerado, 10);
-    funcionarioData.desc_refeicao= checkAndParse(funcionarioData.desc_refeicao, 10);
-    funcionarioData.correcao_positiva = checkAndParse(funcionarioData.correcao_positiva, 10);
-    funcionarioData.correcao_negativa = checkAndParse(funcionarioData.correcao_negativa, 10);
-    funcionarioData.data_inicio = formatDate(funcionarioData.data_inicio);
-    funcionarioData.data_fim = formatDate(funcionarioData.data_fim);
+    function checkAndParseString(value, defaultValue = "") {
+        if (typeof value === "string") {
+            return value.trim(); // Remove espaços em branco
+        }
+        return defaultValue; // Retorna um valor padrão se não for uma string
+    }
+    
+    // Apenas adicionar os campos CPF e Chave PIX como strings ao reciboData
+    reciboData.name_funcionario = checkAndParseString(reciboData.name_funcionario);
+    reciboData.nome_cargo = checkAndParseString(reciboData.nome_cargo);
+    reciboData.horas_trabalhadas = checkAndParse(reciboData.horas_trabalhadas, 10,);
+    reciboData.horas_extras_um = checkAndParse(reciboData.horas_extras_um, 10);
+    reciboData.horas_extras_dois = checkAndParse(reciboData.horas_extras_dois, 10);
+    reciboData.horas_noturnas = checkAndParse(reciboData.horas_noturnas, 10);
+    reciboData.repouso_remunerado = checkAndParse(reciboData.repouso_remunerado, 10);
+    reciboData.correcao_positiva = checkAndParse(reciboData.correcao_positiva, 10);
+    reciboData.correcao_negativa = checkAndParse(reciboData.correcao_negativa, 10);
+    reciboData.data_inicio = formatDate(reciboData.data_inicio);
+    reciboData.data_fim = formatDate(reciboData.data_fim);
+    
+    
 
     // Verifique se todos os campos obrigatórios estão preenchidos
-    const requiredFields = ['data_inicio','data_fim','nome_funcionario', 'horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'desc_refeicao', 'correcao_positiva', 'correcao_negativa'];
-
-    console.log(" Dado enviados ",funcionarioData.repouso_remunerado); 
-    console.log(" Dado enviados 3 ",funcionarioData.data_inicio); 
+    const requiredFields = ['data_inicio','data_fim', 'nome_cargo','name_funcionario','horas_trabalhadas', 'repouso_remunerado', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'correcao_positiva', 'correcao_negativa'];
 
 
     //Valida os dados enviados -> Valor fucionario === string // Demais tem que ser float.
     for (const field of requiredFields) {
-    const value = funcionarioData[field];
+    const value = reciboData[field];
     // Verifica se o campo é nome_funcionario
-    if (field === 'nome_funcionario') {
+    if (field === 'name_funcionario'|| field === 'nome_cargo' ) {  
     if (typeof value !== 'string' || value.trim() === '') {
         console.error(`Campo obrigatório "${field}" é inválido.`);
         return;
@@ -275,31 +508,38 @@
         return;
     }
     }
-
+      
     // Para outros campos que são numéricos
     else {
     if (value === undefined || value === null || isNaN(value)) {
         console.error(`Campo obrigatório "${field}" é inválido.`);
+        
         return;
     }
     }
 
-    }   console.log(funcionarioData)
-    console.log('Dados do funcionário antes de enviar:', JSON.stringify(funcionarioData, null, 2));
+    }   
+    console.log('Dados do funcionário antes de enviar:', JSON.stringify(reciboData, null, 2));
 
+    
     // Envie os dados para o backend
-    const response = await fetch('http://127.0.0.1:5000/api/criar_funcionario', {
+    const response = await fetch('http://127.0.0.1:5000/api/criar_recibo', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
-    body: JSON.stringify(funcionarioData),
+    body: JSON.stringify(reciboData),
     mode:'cors'
 
     });
-    console.log('Dados do funcionário antes de enviar:', funcionarioData);
+    
+    //const responseData = await response.json();  // Caso você precise processar a resposta como JSON
+    //console.log('Dados retornados pelo backend:', responseData);
 
     if (response.ok) {
+
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.includes('application/pdf')) {  
     // Ler o PDF como blob
     const blob = await response.blob();
 
@@ -315,30 +555,34 @@
 
 
     // Configura o evento de clique no botão de imprimir PDF
-    document.getElementById('printDocumentButton').onclick = async function() { 
-        const url = window.URL.createObjectURL(blob);
+    document.getElementById('printDocumentButton').onclick =  function() { 
         const a = document.createElement('a');
+        //const url = window.URL.createObjectURL(blob);
         a.href = url;
-        a.download = `${funcionarioData.nome_funcionario}_olerite.pdf`;
+        a.download = `${reciboData.name_funcionario}_olerite.pdf`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-    };
+       };
     
 
     // Configura o evento de clique no botão "Cancelar"
     document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
         $('#documentPreviewModal').modal('hide'); // Fecha o modal
-    };
+        };
     // Exibe o modal se necessário
     $('#documentPreviewModal').modal('show');
 
-    } else {
+        } else {
+            console.error('Erro: A resposta não é um PDF. Tipo de conteúdo:', contentType);
+        }
+        } else {
         console.error('Erro ao gerar o olerite:', response.statusText);
-    }
+        }
         
-    });
+   });
+
     // Fechar mensagens 
     messageDiv.addEventListener('click', function() {
     messageDiv.style.display = 'none'; // Esconde a mensagem ao clicar na mensagem

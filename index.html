@@ -6,8 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de pagamentos Construmaq Engenharia</title>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
         <!-- Incluindo a biblioteca jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="style.css"> <!-- Adicione esta linha -->    
@@ -18,98 +25,166 @@
     <h1>Portal de Pagamentos     Construmaq Engenharia</h1>
     
     <div class="tab-buttons">
-        <button onclick="showTab('lista')">Lista de Cargos</button>
-        <button onclick="showTab('cargo')">Cadastro de Cargo</button>
-        <button onclick="showTab('funcionario')">Dados do Funcionário</button>
+        <button onclick="showTab('lista')">Lista de Funcionarios</button>
+        <button onclick="showTab('funcionarios')">Cadastro de Funcionarios</button>
+        <button onclick="showTab('recibo')">Gerador de Recibo</button>
         
     </div>
     <div id="lista" class="tab active">
         <div class="form-container">
-            <h2>Cargos Cadastrados:</h2>
-            <div id="lista-cargos">
+            <h2>Funcionarios Cadastrados</h2>
+             <!-- Campo de busca por nome de funcionário -->
+            <label for="search-funcionario">Busca:</label>  
+            <input type="text" id="search-funcionario" name="search-funcionario" placeholder="Buscar por Nome ou CPF" oninput="filterFuncionarios()" style="width: 100%; margin-bottom: 15px; padding: 10px;">
+            <div id="lista-funcionarios">
+                <div id="pagination" class="pagination"></div>
                 <!-- Lista de cargos será preenchida dinamicamente -->
             </div>
         </div>
     </div>
-
-    <div id="cargo" class="tab active">
+     <!-- Modal de Edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Funcionário</h2>
+            <form id="editForm">
+                <label for="nome_funcionario">Nome Funcionario:</label>
+                <input type="text" id="nome_funcionario" name="nome_funcionario" required>
+                <br><br>
+                <label for="numero_cpf">Numero CPF:</label>
+                <input type="text" id="numero_cpf" name="numero_cpf" required>
+                <br><br>
+                <label for="chave_pix">Chave PIX:</label>
+                <input type="text" id="chave_pix" name="chave_pix" required>
+                <br><br>
+                <label for="valor_hora_base">Valor Hora:</label>
+                <input type="number" id="valor_hora_base" name="valor_hora_base" step="0.01" required>
+                <br><br>
+                <label for="valor_hora_extra_um">Valor Hora Extra de 50%:</label>
+                <input type="number" id="valor_hora_extra_um" name="valor_hora_extra_um" step="0.01" required>
+                <br><br>
+                <label for="valor_hora_extra_dois">Valor Hora Extra de 100%:</label>
+                <input type="number" id="valor_hora_extra_dois" name="valor_hora_extra_dois" step="0.01" required>
+                <br><br>
+                <label for="adicional_noturno">Valor Adicional Noturno:</label>
+                <input type="number" step="0.01" id="adicional_noturno" name="adicional_noturno" required placeholder="0.00">
+                <br><br>
+                <label for="repouso_remunerado">Valor Repouso Remunerado:</label>
+                <input type="number" step="0.01" id="repouso_remunerado" name="repouso_remunerado" required placeholder="0.00">
+                <br><br>
+                <label for="valor_ferias">Valor de Férias (%):</label>
+                <input type="number" step="0.01" id="valor_ferias" name="valor_ferias" required placeholder="0.00">
+                <br><br>
+                <label for="valor_um_terco_ferias">Valor do 1/3 Férias (%):</label>
+                <input type="number" step="0.01" id="valor_um_terco_ferias" name="valor_um_terco_ferias" required placeholder="0.00">
+                <br><br>
+                <label for="valor_decimo_terceiro">Valor do 13º Salário (%):</label>
+                <input type="number" step="0.01" id="valor_decimo_terceiro" name="valor_decimo_terceiro" required placeholder="0.00">
+                <br><br>
+                <label for="pagamento_fgts">Pagamento de FGTS (%):</label>
+                <input type="number" step="0.01" id="pagamento_fgts" name="pagamento_fgts" required placeholder="0.00">
+                <br><br>
+                <label for="desconto_inss">Desconto de INSS (%):</label>
+                <input type="number" step="0.01" id="desconto_inss" name="desconto_inss" required placeholder="0.00">
+                <br><br>
+                <label for="desconto_refeicao">Desconto de Refeição:</label>
+                <input type="number" step="0.01" id="desconto_refeicao" name="desconto_refeicao" required placeholder="0.00">
+                <br><br>
+                <label for="desconto_transporte">Desconto de Transporte :</label>
+                <input type="number" step="0.01" id="desconto_transporte" name="desconto_transporte" required placeholder="0.00">
+                <br><br>
+                <!-- Adicione mais campos conforme necessário -->
+                <input type="submit" value="Salvar">
+            </form>
+        </div>
+    </div>
+    <div id="funcionarios" class="tab active">
         <div class="form-container">
-            <form id="cargo-form">
+            <form id="funcionario-form">
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="nome_cargo">Nome do Cargo:</label>
-                        <input type="text" id="nome_cargo" name="nome_cargo" required placeholder=" Nome do cargo">
+                        <label for="numero_cpf_c">Numero CPF:</label>
+                        <input type="text" id="numero_cpf_c"  name="numero_cpf_c"required placeholder="CPF">
                     </div>
                     <div class="form-group">
-                        <label for="valor_hora_base">Valor Hora:</label>
-                        <input type="number" step="0.01" id="valor_hora_base" name="valor_hora_base" required placeholder="0.00">
+                        <label for="chave_pix_c">Chave PIX:</label>
+                        <input type="text" id="chave_pix_c" name="chave_pix_c" required placeholder="Chave">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="valor_hora_extra_um">Valor Hora Extra de 50%:</label>
-                        <input type="number" step="0.01" id="valor_hora_extra_um" name="valor_hora_extra_um" required placeholder="0.00">
+                        <label for="nome_funcionario_c">Nome do Funcionario:</label>
+                        <input type="text" id="nome_funcionario_c" name="nome_funcionario_c" required placeholder=" Nome do Funcionario">
                     </div>
                     <div class="form-group">
-                        <label for="valor_hora_extra_dois">Valor Hora Extra de 100%:</label>
-                        <input type="number" step="0.01" id="valor_hora_extra_dois" name="valor_hora_extra_dois" required placeholder="0.00">
+                        <label for="valor_hora_base_c">Valor Hora:</label>
+                        <input type="number" step="0.01" id="valor_hora_base_c" name="valor_hora_base_c" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="adicional_noturno">Valor Adicional Noturno:</label>
-                        <input type="number" step="0.01" id="adicional_noturno" name="adicional_noturno" required placeholder="0.00">
+                        <label for="valor_hora_extra_um_c">Valor Hora Extra de 50%:</label>
+                        <input type="number" step="0.01" id="valor_hora_extra_um_c" name="valor_hora_extra_um_c" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="repouso_remunerado">Valor Repouso Remunerado:</label>
-                        <input type="number" step="0.01" id="repouso_remunerado" name="repouso_remunerado" required placeholder="0.00">
+                        <label for="valor_hora_extra_dois_c">Valor Hora Extra de 100%:</label>
+                        <input type="number" step="0.01" id="valor_hora_extra_dois_c" name="valor_hora_extra_dois_c" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="valor_ferias">Valor de Férias (%):</label>
-                        <input type="number" step="0.01" id="valor_ferias" name="valor_ferias" required placeholder="0.00">
+                        <label for="adicional_noturno_c">Valor Adicional Noturno:</label>
+                        <input type="number" step="0.01" id="adicional_noturno_c" name="adicional_noturno_c" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="valor_um_terco_ferias">Valor do 1/3 Férias (%):</label>
-                        <input type="number" step="0.01" id="valor_um_terco_ferias" name="valor_um_terco_ferias" required placeholder="0.00">
+                        <label for="repouso_remunerado_c">Valor Repouso Remunerado:</label>
+                        <input type="number" step="0.01" id="repouso_remunerado_c" name="repouso_remunerado_c" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="valor_decimo_terceiro">Valor do 13º Salário (%):</label>
-                        <input type="number" step="0.01" id="valor_decimo_terceiro" name="valor_decimo_terceiro" required placeholder="0.00">
+                        <label for="valor_ferias_c">Valor de Férias (%):</label>
+                        <input type="number" step="0.01" id="valor_ferias_c" name="valor_ferias_c" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="pagamento_fgts">Pagamento de FGTS (%):</label>
-                        <input type="number" step="0.01" id="pagamento_fgts" name="pagamento_fgts" required placeholder="0.00">
+                        <label for="valor_um_terco_ferias_c">Valor do 1/3 Férias (%):</label>
+                        <input type="number" step="0.01" id="valor_um_terco_ferias_c" name="valor_um_terco_ferias_c" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="desconto_inss">Desconto de INSS (%):</label>
-                        <input type="number" step="0.01" id="desconto_inss" name="desconto_inss" required placeholder="0.00">
+                        <label for="valor_decimo_terceiro_c">Valor do 13º Salário (%):</label>
+                        <input type="number" step="0.01" id="valor_decimo_terceiro_c" name="valor_decimo_terceiro_c" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="desconto_refeicao">Desconto de Refeição:</label>
-                        <input type="number" step="0.01" id="desconto_refeicao" name="desconto_refeicao" required placeholder="0.00">
+                        <label for="pagamento_fgts_c">Pagamento de FGTS (%):</label>
+                        <input type="number" step="0.01" id="pagamento_fgts_c" name="pagamento_fgts_c" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="desconto_transporte">Desconto de Transporte :</label>
-                        <input type="number" step="0.01" id="desconto_transporte" name="desconto_transporte" required>
+                        <label for="desconto_inss_c">Desconto de INSS (%):</label>
+                        <input type="number" step="0.01" id="desconto_inss_c" name="desconto_inss_c" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="desconto_refeicao_c">Desconto de Refeição:</label>
+                        <input type="number" step="0.01" id="desconto_refeicao_c" name="desconto_refeicao_c" required placeholder="0.00">
                     </div>
                 </div>
-                <input type="submit" value="Cadastrar Cargo">
-                <div id="message" class="message"></div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="desconto_transporte_C">Desconto de Transporte :</label>
+                        <input type="number" step="0.01" id="desconto_transporte_c" name="desconto_transporte_c" required placeholder="0.00">
+                    </div>
+                </div>
+                <input type="submit" value="Cadastrar Funcionario">
             </form>
         </div>
     </div>
     
-    <div id="funcionario" class="tab">
+    <div id="recibo" class="tab">
         <div class="form-container">
-            <form id="funcionario-form">
+            <form id="recibo-form">
                 <div class="input-row">
                     <div class="form-group">
                         <label for="data_inicio">Data Inicio:</label>
@@ -122,13 +197,13 @@
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label for="nome_funcionario">Nome do Funcionário:</label>
-                        <input type="text" id="nome_funcionario" name="nome_funcionario" required placeholder="EX: Nome">
+                        <label for="nome_cargo">Nome do Cargo:</label>
+                        <input type="text" id="nome_cargo" name="nome_cargo" required placeholder="Nome Cargo">
                     </div>
                     <div class="form-group">
-                        <label for="cargo_funcionario">Cargo:</label>
-                        <select id="cargo_funcionario" name="cargo_funcionario" required>
-                            <!-- Cargos serão preenchidos aqui -->
+                        <label for="name_funcionario">Nome do Funcionário:</label>
+                        <select id="name_funcionario" name="name_funcionario" style="width: 105%;" required>
+                            <!-- Funcionarios serão preenchidos aqui -->
                         </select>
                     </div>
                 </div>
@@ -158,15 +233,11 @@
                         <input type="number" step="0.01"  id="repouso_remunerado" name="repouso_remunerado" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label for="desc_refeicao">Desconto Refeição(-):</label>
-                        <input type="number" step="0.01"  id="desc_refeicao" name="desc_refeicao" required placeholder="0.00">
+                        <label for="correcao_positiva">Valor Correção (+):</label>
+                        <input type="number" step="0.01"  id="correcao_positiva" name="correcao_positiva" required placeholder="0.00">
                     </div>
                 </div>
                 <div class="input-row">
-                    <div class="form-group">
-                        <label for="correcao_positiva">Valo Correção (+):</label>
-                        <input type="number" step="0.01"  id="correcao_positiva" name="correcao_positiva" required placeholder="0.00">
-                    </div>
                     <div class="form-group">
                         <label for="correcao_negativa"> Valor Correção (-):</label>
                         <input type="number" step="0.01" id="correcao_negativa" name="correcao_negativa" required placeholder="0.00">  
