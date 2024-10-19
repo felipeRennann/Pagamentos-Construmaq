@@ -29,19 +29,24 @@
         <button onclick="showTab('funcionarios')">Cadastro de Funcionarios</button>
         <button onclick="showTab('recibo')">Gerador de Recibo</button>
         
-    </div>
+</div>
     <div id="lista" class="tab active">
         <div class="form-container">
             <h2>Funcionarios Cadastrados</h2>
-             <!-- Campo de busca por nome de funcionário -->
-            <label for="search-funcionario">Busca:</label>  
+            <!-- Campo de busca por nome de funcionário -->
+            <label for="search-funcionario">Busca:</label>
             <input type="text" id="search-funcionario" name="search-funcionario" placeholder="Buscar por Nome ou CPF" oninput="filterFuncionarios()" style="width: 100%; margin-bottom: 15px; padding: 10px;">
+            
             <div id="lista-funcionarios">
                 <div id="pagination" class="pagination"></div>
+                <button id="prevPage">Página Anterior</button>
+                <button id="nextPage">Próxima Página</button>
                 <!-- Lista de cargos será preenchida dinamicamente -->
             </div>
         </div>
     </div>
+</div>
+    
 <!-- Modal de Edição -->
 <div id="editModal" class="modal hidden"> <!-- Adicione a classe 'hidden' -->
     <div class="modal-content">
@@ -51,11 +56,13 @@
             <div class="input-row">
                 <div class="form-group">
                     <label for="nome_funcionario">Nome Funcionário:</label>
-                    <input type="text" id="nome_funcionario" name="nome_funcionario" required>
+                    <input type="text" id="nome_funcionario" name="nome_funcionario" required readonly onclick="showMessage()" style="background-color: #f0f0f0;">
+                    <p id="read-only-message" style="color: red; display: none;">Não é possi atualizar o nome nesse momento, somementa os outros dados!.</p> <!-- Mensagem -->
+                </div> 
                 </div>
                 <div class="form-group">
                     <label for="numero_cpf">Número CPF:</label>
-                    <input type="text" id="numero_cpf" name="numero_cpf" required>
+                    <input type="text" id="numero_cpf" name="numero_cpf" required maxlength="11" pattern="\d{11}" title="Por favor, insira um CPF válido com 11 dígitos.">
                 </div>
             </div>
             <div class="input-row">
@@ -137,7 +144,7 @@
                 <div class="input-row">
                     <div class="form-group">
                         <label for="numero_cpf_c">Numero CPF:</label>
-                        <input type="text" id="numero_cpf_c"  name="numero_cpf_c"required placeholder="CPF">
+                        <input type="text" id="numero_cpf_c"  name="numero_cpf_c"required placeholder="CPF" maxlength="11" pattern="\d{11}" title="Por favor, insira um CPF válido com 11 dígitos." >
                     </div>
                     <div class="form-group">
                         <label for="chave_pix_c">Chave PIX:</label>
@@ -302,4 +309,9 @@
         </div>
         <script src="script.js"></script> <!-- Link para o JS --> 
 </body>
+<script>
+    function showMessage() {
+        alert('O campo não é editavel nesse momento!.');
+    }
+</script>
 </html>

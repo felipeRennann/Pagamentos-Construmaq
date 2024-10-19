@@ -292,7 +292,7 @@
 
 
     // Log do cargoData
-    console.log('Dados do Funcionario 1:',funcionariData); // Aqui está o log
+    console.log('Dados do Funcionario:',funcionariData); // Aqui está o log
 
 
     const numericFields = [
@@ -330,7 +330,7 @@
         document.getElementById('message').textContent = data.message;  // Mensagem de sucesso
         fetchCargos();  // Atualiza a lista de cargos
 
-        alert('Funcionário criado com sucesso!');
+        alert('Cadastro de funcionário criado com sucesso!');
         // Atualizar a página
         location.reload();
 
@@ -338,14 +338,14 @@
 
     } else {
         const error = await response.json();
-        alert(`Erro: ${error.message}`);
+         alert(`Erro: ${error.message}`);
     }
     } catch (error) {
         console.error('Erro ao enviar os dados:', error);
         //alert('Erro ao enviar os dados. Tente novamente.');
-        alert('Funcionário criado com sucesso!');
-        // Atualizar a página
+        alert('Cadastro de funcionário criado com sucesso!');
         location.reload();
+
     }
 
     });
