@@ -49,7 +49,7 @@ class Gerar_olerite:
             ["", "", ""],
             ["R E C I B O","", f"VALOR: R$ {total_pagamento['sub_total_tres']:.2f}"],
             ["", "", ""],
-            [f"RECEBI DE VR3 EIRELI. A QUANTIA DE R$: {total_pagamento['sub_total_tres']:.2f}", "",""],
+            [f"RECEBI DE VR3 EIRELI. A QUANTIA DE R$: {total_pagamento['sub_total_tres']:.2f}","",""],
             ["", "", ""]
             
             
@@ -69,23 +69,23 @@ class Gerar_olerite:
         data_fim_formatada = (self.funcao.data_fim).strftime('%d/%m/%Y')
         return [
             [f"PROVENTOS DE PRESTAÇÃO DE SERVIÇOS NO PERÍODO DE", f"{data_inicio_formatada}","Até", f"{data_fim_formatada}"],
-            [f"SERVIÇO PRESTADO: {self.funcao.nome_cargo }", "    QUAT.  VL R$","","PROVENTO"],
+            [f"NOME: {self.funcao.name_funcionario}", "    QUAT.  VL R$","","PROVENTO"],
             [f"HORAS TRABALHADAS:", f"{self.funcao.horas_trabalhadas:.2f}  X  {self.funcao.funcionario['valor_hora_base']:.2f}","=", f"{total_pagamento['pagamento_base']:.2f}"],
             [f"REPOUSO REMUNERADO:", f"{self.funcao.repouso_remunerado:.2f}  X  {self.funcao.funcionario['repouso_remunerado']:.2f}","=", f"{total_pagamento['pagamento_folga_remunerada']:.2f}"],
             [f"HORAS EXTRAS DE 50%:", f"{self.funcao.horas_extras_um:.2f}  X  {self.funcao.funcionario['valor_hora_extra_um']:.2f}","=", f"{total_pagamento['pagamento_horas_extras_um']:.2f}"],
             [f"HORAS EXTRAS DE 100%:", f"{self.funcao.horas_extras_dois:.2f}  X  {self.funcao.funcionario['valor_hora_extra_dois']:.2f}","=", f"{total_pagamento['pagamento_horas_extras_dois']:.2f}"],
             [f"ADICIONAL NOTURNO:", f"{self.funcao.horas_noturnas:.2f}  X  {self.funcao.funcionario['adicional_noturno']:.2f}","=", f"{total_pagamento['pagamento_adicional_noturno']:.2f}"],
             [f"SUB-TOTAL 1:","","", f"{total_pagamento['sub_total_um']:.2f}",],
-            [f"PAGTO. FÉRIAS: ({self.funcao.funcionario['valor_ferias']:.2f}%)","","", f"{total_pagamento['sub_total_um_um']:.2f}", ],
-            [f"PAGTO. 1/3 FÉRIAS: ({self.funcao.funcionario['valor_um_terco_ferias']:.2f}%)", "","",f"{total_pagamento['sub_total_um_dois']:.2f}", ],
-            [f"PAGTO. 13° SALÁRIO: ({self.funcao.funcionario['valor_decimo_terceiro']:.2f}%)","","", f"{total_pagamento['sub_total_um_tres']:.2f}", ],
-             [f"PAGTO. FGTS: ({self.funcao.funcionario['pagamento_fgts']:.2f}%) (+)","","", f"{total_pagamento['sub_total_um_cinco']:.2f}", ],
+            [f"PAG. FÉRIAS ({self.funcao.funcionario['valor_ferias']:.2f}%):","","", f"{total_pagamento['sub_total_um_um']:.2f}", ],
+            [f"PAG. 1/3 FÉRIAS ({self.funcao.funcionario['valor_um_terco_ferias']:.2f}%):", "","",f"{total_pagamento['sub_total_um_dois']:.2f}", ],
+            [f"PAG. 13° SALÁRIO ({self.funcao.funcionario['valor_decimo_terceiro']:.2f}%):","","", f"{total_pagamento['sub_total_um_tres']:.2f}", ],
+             [f"PAG FGTS ({self.funcao.funcionario['pagamento_fgts']:.2f}%):","","", f"{total_pagamento['sub_total_um_cinco']:.2f}", ],
             [f"SUB-TOTAL 2","","", f"{total_pagamento['sub_total_dois']:.2f}",],
-            [f"PAGTO. INSS: ({self.funcao.funcionario['desconto_inss']:.2f}%) (-)","","", f"{total_pagamento['sub_total_dois_seis']:.2f}"],
-            [f"REFEIÇÃO ({self.funcao.funcionario['desconto_refeicao']:.2f}% de Hs Trab + Repouso):","","", f"{total_pagamento['sub_total_dois_sete']:.2f}"],
-            [f"VAL. TRANSPORTE ({self.funcao.funcionario['desconto_transporte']:.2f}% de Hs Trab + Repouso):","","", f"{total_pagamento['sub_total_dois_oito']:.2f}"],
-            [f"COREÇÃO (+):","","", f"{total_pagamento['sub_total_dois_nove']:.2f}"],
-            [f"CORREÇÃO(-):","","", f"{total_pagamento['sub_total_dois_dez']:.2f}"],
+            [f"PAG. INSS ({self.funcao.funcionario['desconto_inss']:.2f}%):","","", f"{total_pagamento['sub_total_dois_seis']:.2f}"],
+            [f"DESC. REFEIÇÃO ({self.funcao.funcionario['desconto_refeicao']:.2f}% de Hs Trab + Repouso):","","", f"{total_pagamento['sub_total_dois_sete']:.2f}"],
+            [f"DESC.TRANSPORTE ({self.funcao.funcionario['desconto_transporte']:.2f}% de Hs Trab + Repouso):","","", f"{total_pagamento['sub_total_dois_oito']:.2f}"],
+            [f"COREÇÃO (+) :","","", f"{total_pagamento['sub_total_dois_nove']:.2f}"],
+            [f"CORREÇÃO (-):","","", f"{total_pagamento['sub_total_dois_dez']:.2f}"],
             [f"SALDO A RECEBER:","","", f"{total_pagamento['sub_total_tres']:.2f}"]
             
         ]
