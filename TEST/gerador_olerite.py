@@ -93,14 +93,11 @@ class Gerar_olerite:
     def _create_table(self, content):
         table = Table(content)
         table.setStyle(TableStyle([
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Cor do fundo do cabeçalho
-                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke), # Cor do texto no cabeçalho
                     ('ALIGN', (0, 0), (-1, -1), 'LEFT'), # Alinhamento à esquerda
                     ('ALIGN', (1, 0), (-1, -1), 'RIGHT'), # Alinhamento à direita para a segunda coluna
                     ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'), # Fonte
                     ('FONTSIZE', (0, 0), (-1, -1), 12), # Tamanho da fonte
                     ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Padding na parte inferior do cabeçalho
-                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige), # Cor do fundo para o restante da tabela
                     ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),  # Negrito para a última linha
                     ('FONTSIZE', (0, -1), (-1, -1), 12),  # Tamanho da fonte para a última linha
                     # Negrito para "SUB-TOTAL 1" e "SUB-TOTAL 2" e a primeira Linha

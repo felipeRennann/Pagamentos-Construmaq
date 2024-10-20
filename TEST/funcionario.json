@@ -222,5 +222,21 @@
         "valor_decimo_terceiro": 8,
         "valor_ferias": 8,
         "valor_um_terco_ferias": 8
+    },
+    "FABIO AMORAS": {
+        "numero_cpf": "00000000000",
+        "chave_pix": "teste@teste.com",
+        "valor_hora_base": 9.01,
+        "valor_hora_extra_um": 20,
+        "valor_hora_extra_dois": 0,
+        "repouso_remunerado": 9.01,
+        "adicional_noturno": 0,
+        "desconto_inss": 0,
+        "desconto_refeicao": 1,
+        "desconto_transporte": 0,
+        "pagamento_fgts": 8,
+        "valor_decimo_terceiro": 8.33,
+        "valor_ferias": 8.33,
+        "valor_um_terco_ferias": 2.77
     }
 }
