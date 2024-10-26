@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "projeto-pgcon",
+    "production": "projeto-pgcon"
+  },
+  "targets": {},
+  "etags": {}
+}

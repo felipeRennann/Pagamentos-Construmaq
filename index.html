@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de pagamentos Construmaq Engenharia</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css"> <!-- Adicione esta linha -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link rel="stylesheet" href="style.css"> <!-- Adicione esta linha -->    
+        
+</head>
+<body>
+
+    <h1>Portal de Pagamentos     Construmaq Engenharia</h1>
+    
+    <div class="tab-buttons">
+        <button onclick="showTab('lista')">Lista de Funcionarios</button>
+        <button onclick="showTab('funcionarios')">Cadastro de Funcionarios</button>
+        <button onclick="showTab('recibo')">Gerador de Recibo</button>
+        
+</div>
+    <div id="lista" class="tab active">
+        <div class="form-container">
+            <h2>Funcionarios Cadastrados</h2>
+            <!-- Campo de busca por nome de funcionário -->
+            <label for="search-funcionario">Busca:</label>
+            <input type="text" id="search-funcionario" name="search-funcionario" placeholder="Buscar por Nome ou CPF" oninput="filterFuncionarios()" style="width: 100%; margin-bottom: 15px; padding: 10px;">
+            
+            <div id="lista-funcionarios">
+                <div id="pagination" class="pagination"></div>
+                <button id="prevPage">Página Anterior</button>
+                <button id="nextPage">Próxima Página</button>
+                <!-- Lista de cargos será preenchida dinamicamente -->
+            </div>
+        </div>
+    </div>
+</div>
+    
+<!-- Modal de Edição -->
+<div id="editModal" class="modal hidden"> <!-- Adicione a classe 'hidden' -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Editar Funcionário</h2>
+        <form id="editForm">
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="nome_funcionario">Nome Funcionário:</label>
+                    <input type="text" id="nome_funcionario" name="nome_funcionario" required readonly onclick="showMessage()" style="background-color: #f0f0f0;">
+                    <p id="read-only-message" style="color: red; display: none;">Não é possi atualizar o nome nesse momento, somementa os outros dados!.</p> <!-- Mensagem -->
+                </div> 
+                </div>
+                <div class="form-group">
+                    <label for="numero_cpf">Número CPF:</label>
+                    <input type="text" id="numero_cpf" name="numero_cpf" required maxlength="11" pattern="\d{11}" title="Por favor, insira um CPF válido com 11 dígitos.">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="chave_pix">Chave PIX:</label>
+                    <input type="text" id="chave_pix" name="chave_pix" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_base">Valor Hora:</label>
+                    <input type="number" id="valor_hora_base" name="valor_hora_base" step="0.01" required>
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="valor_hora_extra_um">Valor Hora Extra de 50%:</label>
+                    <input type="number" id="valor_hora_extra_um" name="valor_hora_extra_um" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_extra_dois">Valor Hora Extra de 100%:</label>
+                    <input type="number" id="valor_hora_extra_dois" name="valor_hora_extra_dois" step="0.01" required>
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="adicional_noturno">Valor Adicional Noturno:</label>
+                    <input type="number" step="0.01" id="adicional_noturno" name="adicional_noturno" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="repouso_remunerado">Valor Repouso Remunerado:</label>
+                    <input type="number" step="0.01" id="repouso_remunerado" name="repouso_remunerado" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="valor_ferias">Valor de Férias (%):</label>
+                    <input type="number" step="0.01" id="valor_ferias" name="valor_ferias" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="valor_um_terco_ferias">Valor do 1/3 Férias (%):</label>
+                    <input type="number" step="0.01" id="valor_um_terco_ferias" name="valor_um_terco_ferias" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="valor_decimo_terceiro">Valor do 13º Salário (%):</label>
+                    <input type="number" step="0.01" id="valor_decimo_terceiro" name="valor_decimo_terceiro" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="pagamento_fgts">Pagamento de FGTS (%):</label>
+                    <input type="number" step="0.01" id="pagamento_fgts" name="pagamento_fgts" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="desconto_inss">Desconto de INSS (%):</label>
+                    <input type="number" step="0.01" id="desconto_inss" name="desconto_inss" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="desconto_refeicao">Desconto de Refeição:</label>
+                    <input type="number" step="0.01" id="desconto_refeicao" name="desconto_refeicao" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="desconto_transporte">Desconto de Transporte:</label>
+                    <input type="number" step="0.01" id="desconto_transporte" name="desconto_transporte" required placeholder="0.00">
+                </div>
+            </div>
+            <!-- Adicione mais campos conforme necessário -->
+            <input type="submit" value="Salvar">
+        </form>
+    </div>
+</div>
+
+
+<div id="funcionarios" class="tab active">
+    <div class="form-container">
+        <form id="funcionario-form">
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="numero_cpf_c">Numero CPF:</label>
+                    <input type="text" id="numero_cpf_c"  name="numero_cpf_c"required placeholder="CPF" maxlength="11" pattern="\d{11}" title="Por favor, insira um CPF válido com 11 dígitos." >
+                </div>
+                <div class="form-group">
+                    <label for="chave_pix_c">Chave PIX:</label>
+                    <input type="text" id="chave_pix_c" name="chave_pix_c" required placeholder="Chave">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="nome_funcionario_c">Nome do Funcionario:</label>
+                    <input type="text" id="nome_funcionario_c" name="nome_funcionario_c" required placeholder=" Nome do Funcionario">
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_base_c">Valor Hora:</label>
+                    <input type="number" step="0.01" id="valor_hora_base_c" name="valor_hora_base_c" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="valor_hora_extra_um_c">Valor Hora Extra de 50%:</label>
+                    <input type="number" step="0.01" id="valor_hora_extra_um_c" name="valor_hora_extra_um_c" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="valor_hora_extra_dois_c">Valor Hora Extra de 100%:</label>
+                    <input type="number" step="0.01" id="valor_hora_extra_dois_c" name="valor_hora_extra_dois_c" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="adicional_noturno_c">Valor Adicional Noturno:</label>
+                    <input type="number" step="0.01" id="adicional_noturno_c" name="adicional_noturno_c" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="repouso_remunerado_c">Valor Repouso Remunerado:</label>
+                    <input type="number" step="0.01" id="repouso_remunerado_c" name="repouso_remunerado_c" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="valor_ferias_c">Valor de Férias (%):</label>
+                    <input type="number" step="0.01" id="valor_ferias_c" name="valor_ferias_c" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="valor_um_terco_ferias_c">Valor do 1/3 Férias (%):</label>
+                    <input type="number" step="0.01" id="valor_um_terco_ferias_c" name="valor_um_terco_ferias_c" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="valor_decimo_terceiro_c">Valor do 13º Salário (%):</label>
+                    <input type="number" step="0.01" id="valor_decimo_terceiro_c" name="valor_decimo_terceiro_c" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="pagamento_fgts_c">Pagamento de FGTS (%):</label>
+                    <input type="number" step="0.01" id="pagamento_fgts_c" name="pagamento_fgts_c" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="desconto_inss_c">Desconto de INSS (%):</label>
+                    <input type="number" step="0.01" id="desconto_inss_c" name="desconto_inss_c" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="desconto_refeicao_c">Desconto de Refeição:</label>
+                    <input type="number" step="0.01" id="desconto_refeicao_c" name="desconto_refeicao_c" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="desconto_transporte_C">Desconto de Transporte :</label>
+                    <input type="number" step="0.01" id="desconto_transporte_c" name="desconto_transporte_c" required placeholder="0.00">
+                </div>
+            </div>
+            <input type="submit" value="Cadastrar Funcionario">
+        </form>
+    </div>
+</div>
+    
+<div id="recibo" class="tab">
+    <div class="form-container">
+        <form id="recibo-form">
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="data_inicio">Data Inicio:</label>
+                    <input type="date" id="data_inicio" name="data_inicio" required placeholder="EX: dd/mm/aaaa">
+                </div>
+                <div class="form-group">    
+                    <label for="data_fim">Data Fim:</label>
+                    <input type="date" id="data_fim" name="data_fim" required placeholder="EX: dd/mm/aaaa">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">    
+                    <label for="data_pagamento">Data de Pagamento:</label>
+                    <input type="date" id="data_pagamento" name="data_pagamento" required placeholder="EX: dd/mm/aaaa">
+                </div>
+                <div class="form-group">
+                    <label for="name_funcionario">Nome do Funcionário:</label>
+                    <select id="name_funcionario" name="name_funcionario" style="width: 105%;" required>
+                    <option value="" disabled selected>Selecione um funcionário</option>
+                     <!-- Funcionarios serão preenchidos aqui -->
+                    </select>
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="nome_cargo">Nome do Cargo:</label>
+                    <input type="text" id="nome_cargo" name="nome_cargo" required placeholder="Nome Cargo">
+                </div>
+                <div class="form-group">
+                    <label for="horas_trabalhadas">Quant. de Horas Trabalhadas:</label>
+                    <input type="number" step="0.01"  id="horas_trabalhadas" name="horas_trabalhadas" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="horas_extras_um">Quant. de Horas Extras de 50%:</label>
+                    <input type="number" step="0.01"  id="horas_extras_um" name="horas_extras_um" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="horas_extras_dois">Quant. de Horas Extras de 100%:</label>
+                    <input type="number" step="0.01"  id="horas_extras_dois" name="horas_extras_dois" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="horas_noturnas">Quant. de Horas Noturnas:</label>
+                    <input type="number" step="0.01"  id="horas_noturnas" name="horas_noturnas" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="valor_diarias">Valor Calculado em Diarias:</label>
+                    <input type="number" step="0.01"  id="valor_diarias" name="valor_diarias" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="correcao_positiva">Valor Correção (+):</label>
+                    <input type="number" step="0.01"  id="correcao_positiva" name="correcao_positiva" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="correcao_negativa"> Valor Correção (-):</label>
+                    <input type="number" step="0.01" id="correcao_negativa" name="correcao_negativa" required placeholder="0.00">  
+                </div>
+            </div>
+            <button type="button" id="gerarDocumentoButton">Gerar Documento</button> 
+            <div id="error-message" style="color: red; display: none;"></div>
+        </form>
+    </div>
+</div>
+    
+    
+            <!-- PUP UP para pre visualização -->
+        <div class="modal" id="documentPreviewModal" tabindex="-1" aria-labelledby="documentPreviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg-custom">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="documentPreviewModalLabel">Prévia do Documento</h5>
+                    </div>
+                    <div class="modal-body">
+                        <pre id="documentContentPreview"></pre> <!-- Prévia do documento -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="printDocumentButton" class="btn btn-primary">Gerar PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script> <!-- Link para o JS --> 
+</body>
+<script>
+    $(document).ready(function() {
+        // Inicializa o Select2
+        $('#name_funcionario').select2({
+            placeholder: "Selecione um funcionário",
+            allowClear: true,
+            width: 'resolve',
+            tags: true // Permite que o usuário adicione novos valores
+        });
+    
+        // Função para carregar funcionários
+        async function loadFuncionarios() {
+            const response = await fetch('http://127.0.0.1:5000/api/funcionarios');
+            if (!response.ok) {
+                console.error('Erro ao carregar funcionários:', response.statusText);
+                return;
+            }
+            const funcionarios = await response.json();
+            
+            // Se a resposta é um objeto, transforme-o em um array
+            const funcionariosArray = Array.isArray(funcionarios) ? funcionarios : [funcionarios];
+            
+            // Preenche o select
+            funcionariosArray.forEach(funcionario => {
+                const option = new Option(funcionario.nome, funcionario.id, false, false);
+                $('#name_funcionario').append(option);
+            });
+    
+            // Atualiza o Select2 com os novos dados
+            $('#name_funcionario').trigger('change');
+        }
+    
+        // Carregar funcionários quando a página for carregada
+        loadFuncionarios();
+    });
+    
+    
+
+    document.getElementById('gerarDocumentoButton').addEventListener('click', async function(event) {
+        event.preventDefault();
+        alert('Fomulario enaviado ')
+        console.log('Botão clicado!'); // Para verificar se está funcionando
+
+        const formData = new FormData(document.getElementById('recibo-form'));
+        const reciboData = Object.fromEntries(formData);
+
+        console.log('Recebido do forme', formData, reciboData)
+
+        const funcionariSelect = document.getElementById('name_funcionario');
+        const funcionarioId = funcionariSelect.value;
+
+        // Verifica se um funcionário foi selecionado
+        if (!funcionarioId) {
+            console.error('Por favor, selecione um funcionário.');
+            return;
+        }
+
+        // Fetch para obter os dados do cargo
+        const funcionarioResponse = await fetch(`http://127.0.0.1:5000/api/funcionarios/${funcionarioId}`);
+        if (!funcionarioResponse.ok) {
+        console.error('Erro ao buscar dados funcionario:', funcionarioResponse.statusText);
+        return;
+        }
+        const funcionario = await funcionarioResponse.json();
+
+        //Definir um valor default em caso de valor zerado ou null
+        const checkAndParse = (value) => {  
+        const parsedValue = parseFloat(value);
+        return isNaN(parsedValue) ? 0.00 : parsedValue;
+        };
+
+        // Função para formatar data para DD-MM-YYYY
+        const formatDate = (dateString) => {
+        const [year, month, day] = dateString.split('-');
+        return `${day}-${month}-${year}`; // Formato DD/MM/YYYY
+        };
+        function checkAndParseString(value, defaultValue = "") {
+            if (typeof value === "string") {
+                return value.trim(); // Remove espaços em branco
+            }
+            return defaultValue; // Retorna um valor padrão se não for uma string
+        }
+        
+        // Apenas adicionar os campos CPF e Chave PIX como strings ao reciboData
+        reciboData.name_funcionario = checkAndParseString(reciboData.name_funcionario);
+        reciboData.nome_cargo = checkAndParseString(reciboData.nome_cargo);
+        reciboData.horas_trabalhadas = checkAndParse(reciboData.horas_trabalhadas, 10,);
+        reciboData.horas_extras_um = checkAndParse(reciboData.horas_extras_um, 10);
+        reciboData.horas_extras_dois = checkAndParse(reciboData.horas_extras_dois, 10);
+        reciboData.horas_noturnas = checkAndParse(reciboData.horas_noturnas, 10);
+        reciboData.repouso_remunerado = checkAndParse(reciboData.repouso_remunerado, 10);
+        reciboData.correcao_positiva = checkAndParse(reciboData.correcao_positiva, 10);
+        reciboData.correcao_negativa = checkAndParse(reciboData.correcao_negativa, 10);
+        reciboData.data_inicio = formatDate(reciboData.data_inicio);
+        reciboData.data_fim = formatDate(reciboData.data_fim);
+        reciboData.data_pagamento= formatDate(reciboData.data_pagamento);
+        reciboData.valor_diarias =checkAndParse(reciboData.valor_diarias, 10);
+
+        
+
+        // Verifique se todos os campos obrigatórios estão preenchidos
+        const requiredFields = ['data_inicio','data_fim', 'data_pagamento','nome_cargo','name_funcionario','horas_trabalhadas', 'horas_extras_um', 'horas_extras_dois', 'horas_noturnas', 'valor_diarias', 'correcao_positiva', 'correcao_negativa'];
+
+
+        //Valida os dados enviados -> Valor fucionario === string // Demais tem que ser float.
+        for (const field of requiredFields) {
+        const value = reciboData[field];
+        // Verifica se o campo é nome_funcionario
+        if (field === 'name_funcionario'|| field === 'nome_cargo' ) {  
+        if (typeof value !== 'string' || value.trim() === '') {
+            console.error(`Campo obrigatório "${field}" é inválido.`);
+            return;
+        }
+        } 
+
+        // Verifica se o campo é data_inicio ou data_fim
+        else if (field === 'data_inicio' || field === 'data_fim' || field === 'data_pagamento' ) {
+        if (!value || new Date(value.split('-').reverse().join('-')).toString() === "Invalid Date") {
+            const errorMessage = `Preenchimento do campo "${field}" é obrigatorio!.`;
+            console.error(errorMessage);
+
+            
+            // Exibir a mensagem de erro no front-end
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = errorMessage; // Define o texto da mensagem
+            errorElement.style.display = 'block'; // Torna a mensagem visível
+
+                    // Ocultar a mensagem após 5 segundos
+            setTimeout(() => {
+                errorElement.style.display = 'none'; // Esconde a mensagem
+            }, 5000); 
+
+            return;
+        }
+        }
+        
+        // Para outros campos que são numéricos
+        else {
+        if (value === undefined || value === null || isNaN(value)) {
+            console.error(`Campo obrigatório "${field}" é inválido.`);
+            
+            return;
+        }
+        }
+
+        }   
+        console.log('Dados do funcionário antes de enviar:', JSON.stringify(reciboData, null, 2));
+
+        
+        // Envie os dados para o backend
+        const response = await fetch('http://127.0.0.1:5000/api/criar_recibo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reciboData),
+        mode:'cors'
+
+        });
+        
+        //const responseData = await response.json();  // Caso você precise processar a resposta como JSON
+        //console.log('Dados retornados pelo backend:', responseData);
+
+        if (response.ok) {
+
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/pdf')) {  
+        // Ler o PDF como blob
+        const blob = await response.blob();
+
+        // Cria um link para download do PDF
+        const url = window.URL.createObjectURL(blob);
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.height = '600px';
+        iframe.src = url;
+        document.getElementById('documentContentPreview').innerHTML = ''; // Limpar conteúdo anterior
+        document.getElementById('documentContentPreview').appendChild(iframe);
+
+
+
+        // Configura o evento de clique no botão de imprimir PDF
+        document.getElementById('printDocumentButton').onclick =  function() { 
+            const a = document.createElement('a');
+            //const url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = `${reciboData.name_funcionario}_olerite.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        };
+        
+
+        // Configura o evento de clique no botão "Cancelar"
+        document.querySelector('.btn-secondary[data-bs-dismiss="modal"]').onclick = function() {
+            $('#documentPreviewModal').modal('hide'); // Fecha o modal
+            };
+        // Exibe o modal se necessário
+        $('#documentPreviewModal').modal('show');
+
+            } else {
+                console.error('Erro: A resposta não é um PDF. Tipo de conteúdo:', contentType);
+            }
+            } else {
+            console.error('Erro ao gerar o olerite:', response.statusText);
+            }
+            
+    });
+
+
+        // Fechar mensagens 
+        messageDiv.addEventListener('click', function() {
+        messageDiv.style.display = 'none'; // Esconde a mensagem ao clicar na mensagem
+        location.reload(); // Recarrega a página ao fechar a mensagem
+        });
+    
+    function showMessage() {
+        alert('O campo não é editavel nesse momento!.');
+    }
+</script>
+</html>
