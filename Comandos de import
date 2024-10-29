@@ -1,0 +1,37 @@
+## Comando para instalar o pip##
+python --version     (VERSÃO PYTHON)
+pip --version ou pip3 --version (VERSÃO PIP)
+
+##CMD intalar o PIP####
+
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py  (SEM PYTHON)
+python get-pip.py  (COM PYTHON)
+
+
+##Instalar o flasck)
+pip install Flask
+pip install Flask Flask-Cors
+
+##Gerar PDF##
+python get-pip.py
+
+##Request##
+pip install requests
+
+
+##Comando para installar tudo se tiver o requirements""
+
+pip install -r requirements.txt
+
+
+###################gerador de arquivo para rodar a aplicação###################################
+
+________________________________________________________________________________________________________
+
+@echo off
+cd "C:\Users\felipe.rsantos\Downloads\Projeto Recibos\POC CONSTRUMAQ\POC CONSTRUMAQ\POC CONSTRUMAQ\TEST" > Caminho
+python app.py
+pause
+
+_________________________________________________________________________________________________________
+	
